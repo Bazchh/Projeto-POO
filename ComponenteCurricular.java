@@ -6,7 +6,7 @@ public class ComponenteCurricular {
     private int cargaHoraria;
     private String nome;
     // Id para criar um componente curricular
-    private final String ID = geradorAleatorioIdComponente();
+    private String ID = geradorAleatorioIdComponente();
     // Id para buscar, comparar ou remover um componente curricular
     private String idBusca;
     private LinkedList<Turma> turmaDaDisciplina = new LinkedList<>();
@@ -22,6 +22,8 @@ public class ComponenteCurricular {
             this.cargaHoraria = cargaHoraria;
         }
     }
+
+
 
     // Construtor usado somente para pesquisar e comparar o objeto instanciado a
     // qual se quer remover ou adicionar
@@ -39,6 +41,10 @@ public class ComponenteCurricular {
         this.nDeTurmasDoComponente++;
         Turma novaTurma = new Turma(this.nome + " T nº" + this.nDeTurmasDoComponente);
         turmaDaDisciplina.add(novaTurma);
+    }
+
+    public String getId(){
+        return this.ID;
     }
 
     @Override
