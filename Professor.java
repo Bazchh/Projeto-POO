@@ -85,6 +85,27 @@ public class Professor {
     /*Implementar um metodo que utiliza o metodo adicionaTurmaParaOComponente para adicionar uma turma para 
      os componentes do professor
      */
+    //Metodo para adicionar uma turma ao componente curricular do professor
+    //O usuario deve inserir a qual componente do professor ele quer adicionar uma turma, assim o professor irá ficar cadastrado na turma como o professor da mesma
+    public void adicionarTurmaAoComponenteDoProfessor(String nome, String id){
+        //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
+        ComponenteCurricular componente = new ComponenteCurricular(nome, id);
+        //Verifica-se se o professor contém a disciplina em sua grade curricular
+        if(this.componentes.size() > 0){
+            if(this.componentes.contains(componente)){
+            //Caso sim, entramos na condição e procuramos a posição onde está o componente curricular a qual se quer adiconar uma turma
+            for(int i = 0; i < this.componentes.size(); i++){
+                if(this.componentes.get(i).equals(componente)){
+                    this.componentes.get(i).addTurmaParaOComponente();
+                }
+            }
+        } else {
+            System.out.println("O professor não possui o componente curricular buscado");
+             }
+        } else {
+            System.out.println("O professor não possui componentes curriculares em sua grade");
+        }
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -118,7 +139,7 @@ public class Professor {
 
     final private static String geradorAleatorioIdProfessor() {
         Random random = new Random();
-        int n = random.nextInt(60000);
+        int n = random.nextInt(90000);
         String str = Integer.toString(n);
         return str;
     }
