@@ -1,25 +1,23 @@
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Professor {
-
-    private int registro; // Variavel usada para identificar o professor
+    private final String id = geradorAleatorioIdProfessor();
     private String nome; // Variavel que armazena o nome do professor
-    private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar
-                              // se é válida com base no critério estabelecido
-    private LinkedList<ComponenteCurricular> componentes = new LinkedList<>(); // ArrayList utilizada para guardar os
-                                                                               // componentes curriculares do professor
+    private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
+    // ArrayList utilizada para guardar os componentes curriculares do professor
+    private LinkedList<ComponenteCurricular> componentes = new LinkedList<>(); 
 
     // Construtor
-    public Professor(int registro, String nome) {
-        this.registro = registro;
+    public Professor(String nome) {
         this.nome = nome;
     }
 
     // Metodo que adiciona um componente curricular na lista de componentes do
     // professor
-    public void adicionaComponenteCurricular(int cargaHoraria, String nome, int iD) {
-        ComponenteCurricular componente = new ComponenteCurricular(cargaHoraria, nome, iD);
+    public void adicionaComponenteCurricular(int cargaHoraria, String nome, String iD) {
+        ComponenteCurricular componente = new ComponenteCurricular(iD,nome);
 
         if (!this.componentes.contains(componente)) {
 
@@ -36,16 +34,17 @@ public class Professor {
                 // Caso a condição anterior não seja satisfeita informamos que o professor já
                 // atingiu a carga horaria limite
                 System.out.println("\nO professor já atingiu o limite de horas por componentes curriculares");
-                System.out.println("\nNão é possivel adicionar mais " + componente.getCargaHoraria() + " horas na carga horaria");
+                System.out.println(
+                        "\nNão é possivel adicionar mais " + componente.getCargaHoraria() + " horas na carga horaria");
             }
         } else {
-            System.out.println("\nO professor já possui o componente curricular informado");        
+            System.out.println("\nO professor já possui o componente curricular informado");
         }
 
     }
 
     // Metodo para remover o componente curricular da grade de um professor
-    public void removerComponenteCurricular(String nome, int iD) {
+    public void removerComponenteCurricular(String nome, String iD) {
         ComponenteCurricular componente = new ComponenteCurricular(nome, iD);
         // Caso o professor possua carga horaria maior que 0 significa que ele possui
         // componentes curriculares em sua grade, logo, podemos verificar se ele possui
@@ -55,13 +54,14 @@ public class Professor {
         } else if (this.cargaHoraria > 0) {
             if (this.componentes.contains(componente)) { // verificando se o professor possui o componente curricular
                                                          // que deseja remover
-                //Buscando a carga horaria do componente a ser removido para diminuir a carga horaria na grade do professor
+                // Buscando a carga horaria do componente a ser removido para diminuir a carga
+                // horaria na grade do professor
                 for (ComponenteCurricular componenteCurricular : componentes) {
                     if (componenteCurricular.equals(componente)) {
                         this.cargaHoraria -= componenteCurricular.getCargaHoraria();
                     }
                 }
-                //Removendo componente curricular
+                // Removendo componente curricular
                 this.componentes.remove(componente);
                 System.out.println("\nComponente curricular removido com sucesso");
             } else {
@@ -78,10 +78,13 @@ public class Professor {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + registro;
         result = prime * result + ((nome == null) ? 0 : nome.hashCode());
         return result;
     }
+
+    /*Implementar um metodo que utiliza o metodo adicionaTurmaParaOComponente para adicionar uma turma para 
+     os componentes do professor
+     */
 
     @Override
     public boolean equals(Object obj) {
@@ -92,8 +95,6 @@ public class Professor {
         if (getClass() != obj.getClass())
             return false;
         Professor other = (Professor) obj;
-        if (registro != other.registro)
-            return false;
         if (nome == null) {
             if (other.nome != null)
                 return false;
@@ -103,15 +104,23 @@ public class Professor {
     }
 
     @Override
-    public String toString() { 
+    public String toString() {
         String str = "";
-        //Utilizei um for para adicionar todos os componentes curriculares á uma string e mostra-los sem que seja no formato de uma lista
-        for(int i = 0; i < componentes.size(); i++){
+        // Utilizei um for para adicionar todos os componentes curriculares á uma string
+        // e mostra-los sem que seja no formato de uma lista
+        for (int i = 0; i < componentes.size(); i++) {
             str += "\n" + componentes.get(i).toString();
-        }   
+        }
 
-        return "\nID do professor: " + registro + "\nNome: " + nome + "\nCarga Horaria: " + cargaHoraria
+        return "\nNome do professor: " + nome + "\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
+    }
+
+    final private static String geradorAleatorioIdProfessor() {
+        Random random = new Random();
+        int n = random.nextInt(60000);
+        String str = Integer.toString(n);
+        return str;
     }
 
 }
