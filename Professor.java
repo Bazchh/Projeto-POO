@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Professor {
-    private final String id = geradorAleatorioIdProfessor();
+    private final String identity = geradorAleatorioIdProfessor();
     private String nome; // Variavel que armazena o nome do professor
     private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
     // ArrayList utilizada para guardar os componentes curriculares do professor
@@ -21,10 +21,9 @@ public class Professor {
     // Metodo que adiciona um componente curricular na lista de componentes do
     // professor
     public void adicionaComponenteCurricular(int cargaHoraria, String nome, String iD) {
-        ComponenteCurricular componente = new ComponenteCurricular(nome,iD);
+        ComponenteCurricular componente = new ComponenteCurricular(cargaHoraria,nome,iD);
 
         if (!this.componentes.contains(componente)) {
-
             // Se a carga horaria do professor ainda for menor que 300 horas, então ainda é
             // possivel adicionar
             // horas a carga horaria do professor, logo executamos o comando dentro do if
@@ -78,37 +77,62 @@ public class Professor {
         }
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
-        return result;
-    }
-
-    /*Implementar um metodo que utiliza o metodo adicionaTurmaParaOComponente para adicionar uma turma para 
-     os componentes do professor
-     */
     //Metodo para adicionar uma turma ao componente curricular do professor
     //O usuario deve inserir a qual componente do professor ele quer adicionar uma turma, assim o professor irá ficar cadastrado na turma como o professor da mesma
     public void adicionarTurmaAoComponenteDoProfessor(String nome, String id){
         //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
         ComponenteCurricular componente = new ComponenteCurricular(nome, id);
         //Verifica-se se o professor contém a disciplina em sua grade curricular
+        System.out.println("to aqui");
         if(this.componentes.size() > 0){
             if(this.componentes.contains(componente)){
+                System.out.println("Entrei no if");
             //Caso sim, entramos na condição e procuramos a posição onde está o componente curricular a qual se quer adiconar uma turma
-            for(int i = 0; i < this.componentes.size(); i++){
-                if(this.componentes.get(i).equals(componente)){
-                    this.componentes.get(i).addTurmaParaOComponente();
-                }
-            }
+            int i = this.componentes.indexOf(componente);
+            this.componentes.get(i).addTurmaParaOComponente();
         } else {
             System.out.println("O professor não possui o componente curricular buscado");
              }
         } else {
             System.out.println("O professor não possui componentes curriculares em sua grade");
         }
+    }
+    
+    //Getters and setters
+    public String getId() {
+        return identity;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getCargaHoraria() {
+        return cargaHoraria;
+    }
+
+    public void setCargaHoraria(int cargaHoraria) {
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    public LinkedList<ComponenteCurricular> getComponentes() {
+        return componentes;
+    }
+
+    public void setComponentes(LinkedList<ComponenteCurricular> componentes) {
+        this.componentes = componentes;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+        return result;
     }
 
     @Override
@@ -137,11 +161,11 @@ public class Professor {
             str += "\n" + componentes.get(i).toString();
         }
 
-        return "\nNome do professor: " + nome + "\nCarga Horaria: " + cargaHoraria
+        return "\nNome do professor: " + nome + "\nID do professor: " + this.identity + "\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
     }
 
-    final private static String geradorAleatorioIdProfessor() {
+    private static String geradorAleatorioIdProfessor() {
         Random random = new Random();
         int n = random.nextInt(90000);
         String str = Integer.toString(n);

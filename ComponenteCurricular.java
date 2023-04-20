@@ -1,18 +1,17 @@
 import java.util.LinkedList;
-import java.util.Random;
 
 public class ComponenteCurricular {
-    private int nDeTurmasDoComponente = 0;
     private int cargaHoraria;
     private String nome;
     // Id para criar um componente curricular
-    private String ID = geradorAleatorioIdComponente();
+    private String ID;
     // Id para buscar, comparar ou remover um componente curricular
     private String idBusca;
     private LinkedList<Turma> turmaDaDisciplina = new LinkedList<>();
 
-    public ComponenteCurricular(int cargaHoraria, String nome) {
+    public ComponenteCurricular(int cargaHoraria, String nome, String id) {
         this.nome = nome;
+        this.ID = id;
         // Condições para definição da carga horaria de um componente curricular
         if (cargaHoraria < 40) {
             this.cargaHoraria = 30;
@@ -23,6 +22,7 @@ public class ComponenteCurricular {
         }
     }
 
+    /* adicionar no toString atributos faltosos */
 
 
     // Construtor usado somente para pesquisar e comparar o objeto instanciado a
@@ -30,29 +30,57 @@ public class ComponenteCurricular {
     public ComponenteCurricular(String nome, String idBusca) {
         this.nome = nome;
         this.idBusca = idBusca;
-    }
-
-    // Metodo que será posteriormente utilizado em algumas operações
-    public int getCargaHoraria() {
-        return this.cargaHoraria;
+        this.cargaHoraria = 0;
     }
 
     public void addTurmaParaOComponente() {
-        this.nDeTurmasDoComponente++;
-        Turma novaTurma = new Turma(this.nome + " T nº" + this.nDeTurmasDoComponente);
+        Turma novaTurma = new Turma(this.nome + " T nº" + this.turmaDaDisciplina.size());
         turmaDaDisciplina.add(novaTurma);
     }
 
-    public String getId(){
-        return this.ID;
+    //Getters and setters
+
+    public int getTurmaDaDisciplinaSize() {
+        return this.turmaDaDisciplina.size();
+    }
+
+    public int getCargaHoraria() {
+        return cargaHoraria;
+    }
+
+    public void setCargaHoraria(int cargaHoraria) {
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String iD) {
+        ID = iD;
+    }
+
+    public LinkedList<Turma> getTurmaDaDisciplina() {
+        return turmaDaDisciplina;
+    }
+
+    public void setTurmaDaDisciplina(LinkedList<Turma> turmaDaDisciplina) {
+        this.turmaDaDisciplina = turmaDaDisciplina;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
-        result = prime * result + ((ID == null) ? 0 : ID.hashCode());
+        result = prime * result + ((idBusca == null) ? 0 : idBusca.hashCode());
         return result;
     }
 
@@ -65,29 +93,17 @@ public class ComponenteCurricular {
         if (getClass() != obj.getClass())
             return false;
         ComponenteCurricular other = (ComponenteCurricular) obj;
-        if (nome == null) {
-            if (other.nome != null)
+        if (idBusca == null) {
+            if (other.idBusca != null)
                 return false;
-        } else if (!nome.equals(other.nome))
-            return false;
-        if (ID == null) {
-            if (other.ID != null)
-                return false;
-        } else if (!ID.equals(other.ID))
+        } else if (!idBusca.equals(other.ID))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Carga horaria: " + cargaHoraria + " nome do componente: " + nome + " ID: " + ID;
-    }
-
-    final private static String geradorAleatorioIdComponente() {
-        Random random = new Random();
-        int n = random.nextInt(600000);
-        String str = Integer.toString(n);
-        return str;
+        return "Carga horaria: " + cargaHoraria + " nome do componente: " + nome + " ID: " + ID + " Turmas: " + getTurmaDaDisciplinaSize();
     }
 
 }

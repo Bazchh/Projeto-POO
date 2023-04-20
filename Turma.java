@@ -14,6 +14,19 @@ public class Turma {
         this.nomeDaTurma = nomeDaTurma;
     }
 
+    //Getters and setters
+    public String getiD() {
+        return iD;
+    }
+
+    public String getNomeDaTurma() {
+        return nomeDaTurma;
+    }
+
+    public void setNomeDaTurma(String nomeDaTurma) {
+        this.nomeDaTurma = nomeDaTurma;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -39,19 +52,7 @@ public class Turma {
         return true;
     }
 
-    public String getiD() {
-        return iD;
-    }
-
-    public String getNomeDaTurma() {
-        return nomeDaTurma;
-    }
-
-    public void setNomeDaTurma(String nomeDaTurma) {
-        this.nomeDaTurma = nomeDaTurma;
-    }
-
-    final private static String geradorAleatorio() {
+    private static String geradorAleatorio() {
         Random random = new Random();
         int n = random.nextInt(600000);
         String str = Integer.toString(n);
