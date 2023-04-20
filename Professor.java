@@ -8,6 +8,10 @@ public class Professor {
     private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
     // ArrayList utilizada para guardar os componentes curriculares do professor
     private LinkedList<ComponenteCurricular> componentes = new LinkedList<>(); 
+    
+    public int getComponentesSize() {
+    	return this.componentes.size();
+    }
 
     // Construtor
     public Professor(String nome) {
@@ -17,7 +21,7 @@ public class Professor {
     // Metodo que adiciona um componente curricular na lista de componentes do
     // professor
     public void adicionaComponenteCurricular(int cargaHoraria, String nome, String iD) {
-        ComponenteCurricular componente = new ComponenteCurricular(iD,nome);
+        ComponenteCurricular componente = new ComponenteCurricular(nome,iD);
 
         if (!this.componentes.contains(componente)) {
 
