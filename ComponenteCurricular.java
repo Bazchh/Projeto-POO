@@ -34,9 +34,7 @@ public class ComponenteCurricular {
 
     public void addTurmaParaOComponente() {
         Turma novaTurma = new Turma(this.nome + " T nº" + (this.turmaDaDisciplina.size()+1));
-        System.out.println("oi");
         this.turmaDaDisciplina.add(novaTurma);
-        System.out.println(turmaDaDisciplina);
 
     }
 
