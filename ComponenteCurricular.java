@@ -29,13 +29,15 @@ public class ComponenteCurricular {
     // qual se quer remover ou adicionar
     public ComponenteCurricular(String nome, String idBusca) {
         this.nome = nome;
-        this.idBusca = idBusca;
-        this.cargaHoraria = 0;
+        this.ID = idBusca;
     }
 
     public void addTurmaParaOComponente() {
-        Turma novaTurma = new Turma(this.nome + " T nº" + this.turmaDaDisciplina.size());
-        turmaDaDisciplina.add(novaTurma);
+        Turma novaTurma = new Turma(this.nome + " T nº" + (this.turmaDaDisciplina.size()+1));
+        System.out.println("oi");
+        this.turmaDaDisciplina.add(novaTurma);
+        System.out.println(turmaDaDisciplina);
+
     }
 
     //Getters and setters
@@ -80,7 +82,7 @@ public class ComponenteCurricular {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idBusca == null) ? 0 : idBusca.hashCode());
+        result = prime * result + ((ID == null) ? 0 : ID.hashCode());
         return result;
     }
 
@@ -93,17 +95,17 @@ public class ComponenteCurricular {
         if (getClass() != obj.getClass())
             return false;
         ComponenteCurricular other = (ComponenteCurricular) obj;
-        if (idBusca == null) {
-            if (other.idBusca != null)
+        if (ID == null) {
+            if (other.ID != null)
                 return false;
-        } else if (!idBusca.equals(other.ID))
+        } else if (!ID.equals(other.ID))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Carga horaria: " + cargaHoraria + " nome do componente: " + nome + " ID: " + ID + " Turmas: " + getTurmaDaDisciplinaSize();
+        return "Carga horaria: " + cargaHoraria + " nome do componente: " + nome + " ID: " + ID + " Turmas: " + (getTurmaDaDisciplinaSize()+1);
     }
 
 }

@@ -51,6 +51,10 @@ public class Turma {
             return false;
         return true;
     }
+    
+    public String toString(){
+        return this.nomeDaTurma;
+    }
 
     private static String geradorAleatorio() {
         Random random = new Random();

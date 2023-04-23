@@ -89,6 +89,7 @@ public class Professor {
                 System.out.println("Entrei no if");
             //Caso sim, entramos na condição e procuramos a posição onde está o componente curricular a qual se quer adiconar uma turma
             int i = this.componentes.indexOf(componente);
+            System.out.println(this.componentes.indexOf(componente));
             this.componentes.get(i).addTurmaParaOComponente();
         } else {
             System.out.println("O professor não possui o componente curricular buscado");
