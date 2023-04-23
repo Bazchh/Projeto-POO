@@ -83,13 +83,10 @@ public class Professor {
         //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
         ComponenteCurricular componente = new ComponenteCurricular(nome, id);
         //Verifica-se se o professor contém a disciplina em sua grade curricular
-        System.out.println("to aqui");
         if(this.componentes.size() > 0){
-            if(this.componentes.contains(componente)){
-                System.out.println("Entrei no if");
+            if(this.componentes.contains(componente)){       
             //Caso sim, entramos na condição e procuramos a posição onde está o componente curricular a qual se quer adiconar uma turma
             int i = this.componentes.indexOf(componente);
-            System.out.println(this.componentes.indexOf(componente));
             this.componentes.get(i).addTurmaParaOComponente();
         } else {
             System.out.println("O professor não possui o componente curricular buscado");
