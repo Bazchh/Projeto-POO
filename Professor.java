@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Professor {
     private final String identity = geradorAleatorioIdProfessor();
+    private String titulo;
     private String nome; // Variavel que armazena o nome do professor
     private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
     // ArrayList utilizada para guardar os componentes curriculares do professor
@@ -14,8 +15,14 @@ public class Professor {
     }
 
     // Construtor
-    public Professor(String nome) {
+    public Professor(String nome, String titulo) {
         this.nome = nome;
+        this.titulo = titulo;
+    }
+
+    public Professor(String nome){
+        this.nome = nome;
+        this.titulo = "";
     }
 
     // Metodo que adiciona um componente curricular na lista de componentes do
@@ -159,7 +166,7 @@ public class Professor {
             str += "\n" + componentes.get(i).toString();
         }
 
-        return "\nNome do professor: " + nome + "\nID do professor: " + this.identity + "\nCarga Horaria: " + cargaHoraria
+        return "\nNome do professor: " + nome + "\nTitulo do professor" + this.titulo + "\nID do professor: " + this.identity + "\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
     }
 
