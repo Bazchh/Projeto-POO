@@ -4,12 +4,10 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Menu {
-
-
-private ArrayList <Professor> professores = new ArrayList<>(Arrays.asList());
+    
 //Arraylist de string com os nomes de todos os professor que possuem atualmente um vinculo a universidade, inicialmente para facilitar a 
 //Validação de dados, de busca, remoção e edição de dados
-private ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arrays.asList("ÁDLLER DE OLIVEIRA GUIMARÃES","ALVARO ALVARES DE CARVALHO CESAR SOBRINHO", "ANTONIO DIEGO SILVA FARIAS","BRUNO FONTES DE SOUSA", "CLAUDIO ANDRES CALLEJAS OLGUIN",
+private static ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arrays.asList("ÁDLLER DE OLIVEIRA GUIMARÃES","ALVARO ALVARES DE CARVALHO CESAR SOBRINHO", "ANTONIO DIEGO SILVA FARIAS","BRUNO FONTES DE SOUSA", "CLAUDIO ANDRES CALLEJAS OLGUIN",
 "CLAUDIO DE SOUZA ROCHA", "CLECIDA MARIA BEZERRA BESSA","VERÔNICA MARIA LIMA SILVA", "FELIPE TORRES LEITE", "GLAUBER BARRETO LUNA", "GLAYDSON F B DE OLIVEIRA", "HELDER FERNANDO DE ARAUJO OLIVEIRA", "HIDALYN THEODORY CLEMENTE MATTOS DE SOUZA", "JARBELE CASSIA DA SILVA COUTINHO", "KATIA CILENE DA SILVA SANTOS",
 "LAURO CESAR BEZERRA NOGUEIRA", "LAYSA MABEL DE OLIVEIRA FONTES", "LENARDO CHAVES E SILVA", "LINO MARTINS DE HOLANDA JUNIOR",
 "MONICA PAULA DE SOUSA", "NATHALEE CAVALCANTI DE ALMEIDA", "PAULO GUSTAVO DA SILVA", "PAULO HENRIQUE DAS CHAGAS SILVA", 
@@ -18,7 +16,7 @@ private ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arrays.asL
 
 //Metodo que cadastra um professor em nosso banco de dados
 static void cadastrarProfessor() {
-    
+
         Scanner entrada = new Scanner(System.in); //Scanner para ler dados de entrada para preencher os dados do professor a ser cadastrado de acordo com o usuario
         String nomeDoProfessor; //Atributo onde será armazenado o nome do professor a ser cadastrado e passsado para dentro do construtor da classe professor
         String tituloDoProfessor; //Atributo onde será armazenado o titulo do professor a ser cadastrado e passado para dentro do construtor da classe professor
@@ -31,7 +29,7 @@ static void cadastrarProfessor() {
         //Caso o nome informado esteja dentro da nossa arraylist de string com nome de todos os professor com vinculo atualmente
         //Podemos prosseguir e adicionar o professor e seus respectivos dados para o banco de dados
         if(bancoDeProfessoresAtuais.contains(nomeDoProfessor)){
-            /*Envia pro banco de dados */
+            
         } else {
             //Caso o professor o nome do professor não esteja dentro da nossa arraylist, mostramos a seguinte mensagem
             System.out.println("O professor a ser cadastrado no banco de dados não faz parte do banco de professores do banco de dados atual da universidade");
@@ -39,7 +37,7 @@ static void cadastrarProfessor() {
 
     }
     //Metodo para editar os dados de um professor
-    static void editarProfessor() {
+    public static void editarProfessor() {
         //§canner para ler dados a serem modificados no professor selecionado
         Scanner entrada = new Scanner(System.in);
         //Atributo para armazenar o nome do professor a ser buscado para editar
@@ -113,7 +111,7 @@ static void cadastrarProfessor() {
             /*adiciona o componente inserido ao banco */
             
         }
-            System.println("Deseja adicionar mais algum componente curricular?");
+            System.out.println("Deseja adicionar mais algum componente curricular?");
             System.out.println("S/N ?");
             r = entrada.nextLine();
             //Verificar a resposta do usuario, caso ele responda com qualquer resposta diferente das que 
