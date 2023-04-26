@@ -1,7 +1,6 @@
 import java.util.LinkedList;
 
 import Exceções.NomeDoComponenteInvalido;
-import Exceções.NomeDoProfessorInvalidoException;
 import Exceções.ValoresInvalidosPCargaHoraria;
 
 public class ComponenteCurricular {
@@ -25,7 +24,7 @@ public class ComponenteCurricular {
         } 
 
         if(nome.isEmpty()){
-            throw new NomeDoComponenteInvalido("Nome do professor não deve estar vazio");
+            throw new NomeDoComponenteInvalido("Nome do componente não deve estar vazio");
         }
 
         this.nome = nome;
@@ -39,7 +38,7 @@ public class ComponenteCurricular {
     public ComponenteCurricular(String nome, String idBusca) throws NomeDoComponenteInvalido{
         
         if(nome.isEmpty()){
-            throw new NomeDoComponenteInvalido("Nome do professor não deve estar vazio");
+            throw new NomeDoComponenteInvalido("Nome do componente não deve estar vazio");
         }
         
         this.nome = nome;
