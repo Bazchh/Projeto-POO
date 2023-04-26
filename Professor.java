@@ -2,6 +2,9 @@
 import java.util.LinkedList;
 import java.util.Random;
 
+import Exceções.NomeDoComponenteInvalido;
+import Exceções.ValoresInvalidosPCargaHoraria;
+
 public class Professor {
     private final String identity = geradorAleatorioIdProfessor();
     private String titulo;
@@ -28,9 +31,15 @@ public class Professor {
     // Metodo que adiciona um componente curricular na lista de componentes do
     // professor
     public void adicionaComponenteCurricular(int cargaHoraria, String nome, String iD) {
-        ComponenteCurricular componente = new ComponenteCurricular(cargaHoraria,nome,iD);
+        ComponenteCurricular componente = null;
+        try {
+            componente = new ComponenteCurricular(cargaHoraria,nome,iD);
+        } catch (ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-        if (!this.componentes.contains(componente)) {
+        if (componente != null && !this.componentes.contains(componente)) {
             // Se a carga horaria do professor ainda for menor que 300 horas, então ainda é
             // possivel adicionar
             // horas a carga horaria do professor, logo executamos o comando dentro do if
@@ -55,7 +64,13 @@ public class Professor {
 
     // Metodo para remover o componente curricular da grade de um professor
     public void removerComponenteCurricular(String nome, String iD) {
-        ComponenteCurricular componente = new ComponenteCurricular(nome, iD);
+        ComponenteCurricular componente = null;
+        try {
+            componente = new ComponenteCurricular(nome, iD);
+        } catch (NomeDoComponenteInvalido e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         // Caso o professor possua carga horaria maior que 0 significa que ele possui
         // componentes curriculares em sua grade, logo, podemos verificar se ele possui
         // o componente que buscamos remover
@@ -88,9 +103,15 @@ public class Professor {
     //O usuario deve inserir a qual componente do professor ele quer adicionar uma turma, assim o professor irá ficar cadastrado na turma como o professor da mesma
     public void adicionarTurmaAoComponenteDoProfessor(String nome, String id){
         //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
-        ComponenteCurricular componente = new ComponenteCurricular(nome, id);
+        ComponenteCurricular componente = null;
+        try {
+            componente = new ComponenteCurricular(nome, id);
+        } catch (NomeDoComponenteInvalido e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         //Verifica-se se o professor contém a disciplina em sua grade curricular
-        if(this.componentes.size() > 0){
+        if(componente != null && this.componentes.size() > 0){
             if(this.componentes.contains(componente)){       
             //Caso sim, entramos na condição e procuramos a posição onde está o componente curricular a qual se quer adiconar uma turma
             int i = this.componentes.indexOf(componente);
@@ -98,7 +119,9 @@ public class Professor {
         } else {
             System.out.println("O professor não possui o componente curricular buscado");
              }
-        } else {
+        } else if(componente != null){
+            System.out.println("Componente está com valor NULL");
+        } else  {
             System.out.println("O professor não possui componentes curriculares em sua grade");
         }
     }
