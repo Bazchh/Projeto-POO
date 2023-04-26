@@ -1,7 +1,10 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+
+import Exceções.NomeDoComponenteInvalido;
+import Exceções.NomeDoProfessorInvalidoException;
+import Exceções.ValoresInvalidosPCargaHoraria;
 
 public class Menu {
     
@@ -15,7 +18,7 @@ private static ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arr
 "RODRIGO SOARES SEMENTE", "SHARON DANTAS DA CUNHA", "THATYARA FREIRE DE SOUZA", "THIAGO PEREIRA RIQUE", "VINICIUS SAMUEL VALERIO DE SOUZA", "WILLIAM VIEIRA GOMES"));
 
 //Metodo que cadastra um professor em nosso banco de dados
-static void cadastrarProfessor() {
+static void cadastrarProfessor() throws NomeDoProfessorInvalidoException {
 
         Scanner entrada = new Scanner(System.in); //Scanner para ler dados de entrada para preencher os dados do professor a ser cadastrado de acordo com o usuario
         String nomeDoProfessor; //Atributo onde será armazenado o nome do professor a ser cadastrado e passsado para dentro do construtor da classe professor
@@ -35,6 +38,8 @@ static void cadastrarProfessor() {
             System.out.println("O professor a ser cadastrado no banco de dados não faz parte do banco de professores do banco de dados atual da universidade");
         }
 
+        entrada.close();
+
     }
     //Metodo para editar os dados de um professor
     public static void editarProfessor() {
@@ -50,6 +55,8 @@ static void cadastrarProfessor() {
         } else  {
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
+
+        entrada.close();
     }
 
     
@@ -64,6 +71,8 @@ static void cadastrarProfessor() {
         } else  {
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
+
+        entrada.close();
     }
 
     
@@ -84,37 +93,44 @@ static void cadastrarProfessor() {
         } else  {
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
+
+        entrada.close();
     }
 
     
     public void cadastrarComponenteCurricular() {
         String r = "S";
+        Scanner entrada = new Scanner(System.in); 
         while(r == "S" || r == "s" || r == "sim"){
-        Scanner entrada = new Scanner(System.in);
-        String nomeDoComponenteCurricular;
-        String idComponente;
-        int cargaHorariaComponente;
-        System.out.println("Insira os dados do componente curricular a ser cadastrado: ");
-        System.out.print("\nNome do componente curricular: ");
-        nomeDoComponenteCurricular = entrada.nextLine();
-        System.out.print("\nID do componente curricular: ");
-        idComponente = entrada.nextLine();
-        System.out.print("\nCarga horaria do componente curricular: ");
-        cargaHorariaComponente = entrada.nextInt();
-        ComponenteCurricular componenteASerAdicionado = new ComponenteCurricular(cargaHorariaComponente,nomeDoComponenteCurricular,idComponente);
-        System.out.println("Componente curricular a ser adicionado: ");
-        System.out.println(componenteASerAdicionado.toString());
-        System.out.println("Deseja adiconado este componente curricular?");
-        System.out.println("S/N ?");
-        r = entrada.nextLine();
-        if(r == "S" || r == "s" || r == "sim") {
-            /*adiciona o componente inserido ao banco */
-            
-        }
-            System.out.println("Deseja adicionar mais algum componente curricular?");
+        try {
+            String nomeDoComponenteCurricular;
+            String idComponente;
+            int cargaHorariaComponente;
+            System.out.println("Insira os dados do componente curricular a ser cadastrado: ");
+            System.out.print("\nNome do componente curricular: ");
+            nomeDoComponenteCurricular = entrada.nextLine();
+            System.out.print("\nID do componente curricular: ");
+            idComponente = entrada.nextLine();
+            System.out.print("\nCarga horaria do componente curricular: ");
+            cargaHorariaComponente = entrada.nextInt();
+            ComponenteCurricular componenteASerAdicionado = new ComponenteCurricular(cargaHorariaComponente,nomeDoComponenteCurricular,idComponente);
+            System.out.println("Componente curricular a ser adicionado: ");
+            System.out.println(componenteASerAdicionado.toString());
+            System.out.println("Deseja adiconado este componente curricular?");
             System.out.println("S/N ?");
             r = entrada.nextLine();
-            //Verificar a resposta do usuario, caso ele responda com qualquer resposta diferente das que 
+            if(r == "S" || r == "s" || r == "sim") {
+                /*adiciona o componente inserido ao banco */
+                
+            }
+                System.out.println("Deseja adicionar mais algum componente curricular?");
+                System.out.println("S/N ?");
+                r = entrada.nextLine();
+        } catch (ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        //Verificar a resposta do usuario, caso ele responda com qualquer resposta diferente das que 
             //Fazem o laço continuar se repetindo, o programa sai do laço de repetição while e retorna ao meno
             //Usado na main
             if(!(r == "S" || r == "s" || r == "sim")){
@@ -122,6 +138,9 @@ static void cadastrarProfessor() {
             }
 
         }
+
+        entrada.close();
+        
     }
 
     
