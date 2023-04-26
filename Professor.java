@@ -4,7 +4,7 @@ import java.util.Random;
 
 import Exceções.NomeDoComponenteInvalido;
 import Exceções.ValoresInvalidosPCargaHoraria;
-
+import Exceções.NomeDoProfessorInvalido;
 public class Professor {
     private final String identity = geradorAleatorioIdProfessor();
     private String titulo;
@@ -18,7 +18,11 @@ public class Professor {
     }
 
     // Construtor
-    public Professor(String nome, String titulo) {
+    public Professor(String nome, String titulo) throws NomeDoProfessorInvalido {
+        if(nome.isEmpty()){
+            throw new NomeDoProfessorInvalido("Nome do professor não deve estar vazio");
+        }
+        
         this.nome = nome;
         this.titulo = titulo;
     }
