@@ -1,5 +1,9 @@
 import java.util.LinkedList;
 
+import Exceções.NomeDoComponenteInvalido;
+import Exceções.NomeDoProfessorInvalidoException;
+import Exceções.ValoresInvalidosPCargaHoraria;
+
 public class ComponenteCurricular {
     private int cargaHoraria;
     private String nome;
@@ -9,25 +13,35 @@ public class ComponenteCurricular {
     private String idBusca;
     private LinkedList<Turma> turmaDaDisciplina = new LinkedList<>();
 
-    public ComponenteCurricular(int cargaHoraria, String nome, String id) {
-        this.nome = nome;
-        this.ID = id;
+    public ComponenteCurricular(int cargaHoraria, String nome, String id) throws ValoresInvalidosPCargaHoraria, NomeDoComponenteInvalido {
+        
         // Condições para definição da carga horaria de um componente curricular
         if (cargaHoraria < 40) {
-            this.cargaHoraria = 30;
-        } else if (cargaHoraria >= 40) {
-            this.cargaHoraria = 60;
-        } else {
-            this.cargaHoraria = cargaHoraria;
-        }
-    }
+           throw new ValoresInvalidosPCargaHoraria("Carga Horaria deve ser de 30 ou 60 horas para uma disciplina");
+        } 
+        
+        if (cargaHoraria >= 40) {
+            throw new ValoresInvalidosPCargaHoraria("Carga Horaria deve ser de 30 ou 60 horas para uma disciplina");
+        } 
 
-    /* adicionar no toString atributos faltosos */
+        if(nome.isEmpty()){
+            throw new NomeDoComponenteInvalido("Nome do professor não deve estar vazio");
+        }
+
+        this.nome = nome;
+        this.ID = id;
+        this.cargaHoraria = cargaHoraria;
+    }
 
 
     // Construtor usado somente para pesquisar e comparar o objeto instanciado a
     // qual se quer remover ou adicionar
-    public ComponenteCurricular(String nome, String idBusca) {
+    public ComponenteCurricular(String nome, String idBusca) throws NomeDoComponenteInvalido{
+        
+        if(nome.isEmpty()){
+            throw new NomeDoComponenteInvalido("Nome do professor não deve estar vazio");
+        }
+        
         this.nome = nome;
         this.ID = idBusca;
     }
