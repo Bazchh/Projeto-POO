@@ -4,7 +4,7 @@ import java.util.Random;
 
 import Exceções.NomeDoComponenteInvalido;
 import Exceções.ValoresInvalidosPCargaHoraria;
-import Exceções.NomeDoProfessorInvalido;
+import Exceções.NomeDoProfessorInvalidoException;
 public class Professor {
     private final String identity = geradorAleatorioIdProfessor();
     private String titulo;
@@ -18,16 +18,20 @@ public class Professor {
     }
 
     // Construtor
-    public Professor(String nome, String titulo) throws NomeDoProfessorInvalido {
+    public Professor(String nome, String titulo) throws NomeDoProfessorInvalidoException {
         if(nome.isEmpty()){
-            throw new NomeDoProfessorInvalido("Nome do professor não deve estar vazio");
+            throw new NomeDoProfessorInvalidoException("Nome do professor não deve estar vazio");
         }
         
         this.nome = nome;
         this.titulo = titulo;
     }
 
-    public Professor(String nome){
+    public Professor(String nome) throws NomeDoProfessorInvalidoException{
+        if(nome.isEmpty()){
+            throw new NomeDoProfessorInvalidoException("Nome do professor não deve estar vazio");
+        }
+
         this.nome = nome;
         this.titulo = "";
     }
@@ -39,7 +43,6 @@ public class Professor {
         try {
             componente = new ComponenteCurricular(cargaHoraria,nome,iD);
         } catch (ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -61,7 +64,7 @@ public class Professor {
                         "\nNão é possivel adicionar mais " + componente.getCargaHoraria() + " horas na carga horaria");
             }
         } else {
-            System.out.println("\nO professor já possui o componente curricular informado");
+            System.out.println("\nO professor já possui o componente curricular informado e/ou os dados inseridos são invalidos");
         }
 
     }
@@ -72,7 +75,6 @@ public class Professor {
         try {
             componente = new ComponenteCurricular(nome, iD);
         } catch (NomeDoComponenteInvalido e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         // Caso o professor possua carga horaria maior que 0 significa que ele possui
@@ -99,7 +101,7 @@ public class Professor {
 
         } else {
             System.out.println(
-                    "\nNão é possivel remover o componente curricular pois o professor não possui nenhum em sua grade");
+                    "\nNão é possivel remover o componente curricular pois o professor não possui nenhum em sua grade e/ou dados inseridos são invalidos");
         }
     }
 
@@ -126,7 +128,7 @@ public class Professor {
         } else if(componente != null){
             System.out.println("Componente está com valor NULL");
         } else  {
-            System.out.println("O professor não possui componentes curriculares em sua grade");
+            System.out.println("O professor não possui componentes curriculares em sua grade e/ou dados inseridos são invalidos");
         }
     }
     
@@ -193,7 +195,7 @@ public class Professor {
             str += "\n" + componentes.get(i).toString();
         }
 
-        return "\nNome do professor: " + nome + "\nTitulo do professor" + this.titulo + "\nID do professor: " + this.identity + "\nCarga Horaria: " + cargaHoraria
+        return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.identity + "\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
     }
 
