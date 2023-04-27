@@ -1,21 +1,14 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 import Exceções.NomeDoComponenteInvalido;
 import Exceções.NomeDoProfessorInvalidoException;
 import Exceções.ValoresInvalidosPCargaHoraria;
 
 public class Menu {
-    
-//Arraylist de string com os nomes de todos os professor que possuem atualmente um vinculo a universidade, inicialmente para facilitar a 
-//Validação de dados, de busca, remoção e edição de dados
-private static ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arrays.asList("ÁDLLER DE OLIVEIRA GUIMARÃES","ALVARO ALVARES DE CARVALHO CESAR SOBRINHO", "ANTONIO DIEGO SILVA FARIAS","BRUNO FONTES DE SOUSA", "CLAUDIO ANDRES CALLEJAS OLGUIN",
-"CLAUDIO DE SOUZA ROCHA", "CLECIDA MARIA BEZERRA BESSA","VERÔNICA MARIA LIMA SILVA", "FELIPE TORRES LEITE", "GLAUBER BARRETO LUNA", "GLAYDSON F B DE OLIVEIRA", "HELDER FERNANDO DE ARAUJO OLIVEIRA", "HIDALYN THEODORY CLEMENTE MATTOS DE SOUZA", "JARBELE CASSIA DA SILVA COUTINHO", "KATIA CILENE DA SILVA SANTOS",
-"LAURO CESAR BEZERRA NOGUEIRA", "LAYSA MABEL DE OLIVEIRA FONTES", "LENARDO CHAVES E SILVA", "LINO MARTINS DE HOLANDA JUNIOR",
-"MONICA PAULA DE SOUSA", "NATHALEE CAVALCANTI DE ALMEIDA", "PAULO GUSTAVO DA SILVA", "PAULO HENRIQUE DAS CHAGAS SILVA", 
-"PEDRO THIAGO VALERIO DE SOUZA", "RAIMUNDO LEIRTON FREITAS MAIA", "REUDISMAM ROLIM DE SOUSA", "ROBSON LOCATELLI MACEDO", 
-"RODRIGO SOARES SEMENTE", "SHARON DANTAS DA CUNHA", "THATYARA FREIRE DE SOUZA", "THIAGO PEREIRA RIQUE", "VINICIUS SAMUEL VALERIO DE SOUZA", "WILLIAM VIEIRA GOMES"));
 
 //Metodo que cadastra um professor em nosso banco de dados
 static void cadastrarProfessor() {
@@ -47,10 +40,12 @@ static void cadastrarProfessor() {
        }     
     }
     //Metodo para editar os dados de um professor
-    public static void editarProfessor() {
+     static void editarProfessor() {
         //§canner para ler dados a serem modificados no professor selecionado
         Scanner entrada = new Scanner(System.in);
         //Atributo para armazenar o nome do professor a ser buscado para editar
+        
+        try{
         String nomeDoProfessor;
         System.out.println("Insira o nome do professor a ser editado: ");
         nomeDoProfessor = entrada.nextLine();
@@ -59,15 +54,18 @@ static void cadastrarProfessor() {
             /*utilizar comando update aqui para editar o professor caso ele exista no banco de dados*/
         } else  { 
             System.out.println("O professor buscado não existe no banco de dados da universidade");
-        }
-
+            }
+        } catch (NomeDoProfessorInvalidoException e){
+            e.printStackTrace();
+        } finally{
         entrada.close();
+        }
     }
 
     
-    public void verDadosProfessor() {
+    static void verDadosProfessor() {
         Scanner entrada = new Scanner(System.in);
-        try {
+       try{
         String nomeDoProfessor;
         System.out.println("Insira o nome do professor para ver os seus dados: ");
         nomeDoProfessor = entrada.nextLine();
@@ -77,43 +75,50 @@ static void cadastrarProfessor() {
         } else  {
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
-            }
-        catch (NomeDoProfessorInvalidoException e) { 
-            e.printStackTrace();
-        } finally {
-            entrada.close();
-        }
+    } catch (NomeDoProfessorInvalidoException e){
+        e.printStackTrace();
+    } finally {
+        entrada.close();
+    }
+        
         
     }
 
     
-    public void listarProfessores() {
+    static void listarProfessores() {
         ArrayList <Professor> listaDeProfessores = new ArrayList<>();
         
     }
 
     
-    public void excluirProfessor() {
+    static void excluirProfessor() {
         Scanner entrada = new Scanner(System.in);
+        
+        try{
         String nomeDoProfessor;
         System.out.println("Insira o nome do professor a ser excluido: ");
         nomeDoProfessor = entrada.nextLine();
         Professor professor  = new Professor(nomeDoProfessor);
-        if(bancoDeProfessoresAtuais.contains(professor)){
+        if(bancoDeProfessoresAtuais.contains(nomeDoProfessor)){
             /*utilizar comando drop aqui para excluir o professor caso ele exista no banco de dados*/
         } else  {
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
-
+    } catch (NomeDoProfessorInvalidoException e){
+        e.printStackTrace();
+    } finally{
         entrada.close();
+    }
+        
     }
 
     
-    public void cadastrarComponenteCurricular() {
+    static void cadastrarComponenteCurricular() {
         String r = "S";
         Scanner entrada = new Scanner(System.in); 
         while(r == "S" || r == "s" || r == "sim"){
         try {
+            //Variaveis que armazenam os dados do componente curricular a ser cadastrado
             String nomeDoComponenteCurricular;
             String idComponente;
             int cargaHorariaComponente;
@@ -124,100 +129,146 @@ static void cadastrarProfessor() {
             idComponente = entrada.nextLine();
             System.out.print("\nCarga horaria do componente curricular: ");
             cargaHorariaComponente = entrada.nextInt();
+
+            //instanciando um objeto da classe componente a qual armazena os dados que serão enviados para o banco de dados
             ComponenteCurricular componenteASerAdicionado = new ComponenteCurricular(cargaHorariaComponente,nomeDoComponenteCurricular,idComponente);
             System.out.println("Componente curricular a ser adicionado: ");
+            //Informando os dados do componente curricular a ser adicionado antes de envia-lo para o BD, afim de que o usuario verifique se os dados estão corretos
             System.out.println(componenteASerAdicionado.toString());
-            System.out.println("Deseja adiconado este componente curricular?");
-            System.out.println("S/N ?");
+            System.out.println("Deseja adiconado este componente curricular? S/N ?");
             r = entrada.nextLine();
+
+            //Caso o usuario realmente deseje inserir no BD o componente entramos neste laço if
             if(r == "S" || r == "s" || r == "sim") {
                 /*adiciona o componente inserido ao banco */
+                System.out.println("Inserido com sucesso");
                 
             }
+
+            //Logo depois perguntamos se o mesmo deseja inserir mais algum componente, se sim continuamos com as inserções, caso não retornamos ao menu de ops
                 System.out.println("Deseja adicionar mais algum componente curricular?");
                 System.out.println("S/N ?");
                 r = entrada.nextLine();
         } catch (ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } 
         //Verificar a resposta do usuario, caso ele responda com qualquer resposta diferente das que 
             //Fazem o laço continuar se repetindo, o programa sai do laço de repetição while e retorna ao meno
             //Usado na main
-            if(!(r == "S" || r == "s" || r == "sim")){
+            if(r != "S" || r != "s" || r != "sim"){
                 System.out.println("Retornando ao menu principal");
             }
 
         }
-
         entrada.close();
         
     }
 
     
-    public void editarComponenteCurricular() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editarComponenteCurricular'");
+    static void editarComponenteCurricular() {
+        Scanner entrada = new Scanner(System.in);
+        ComponenteCurricular componente = null;
+        try{
+            String nomeDoComponente;
+            String idDoComponente;
+            System.out.println("Insira o nome do componente a qual quer editar: ");
+            nomeDoComponente = entrada.nextLine();
+            System.out.println("Insira o id do componente a qual quer editar: ");
+            idDoComponente = entrada.nextLine();
+            componente = new ComponenteCurricular(nomeDoComponente, idDoComponente);
+            if(idsComponentes.contains(idDoComponente)){
+
+            } else {
+                System.out.println("O componente curricular informado não está na lista dos componentes cadastrados");
+            }
+        } catch (NomeDoComponenteInvalido e){
+            e.printStackTrace();
+        } finally{
+            entrada.close();
+        }
     }
 
     
-    public void verComponenteCurricular() {
+    static void verComponenteCurricular() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'verComponenteCurricular'");
     }
 
     
-    public void listarComponentesCurriculares() {
+    static void listarComponentesCurriculares() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listarComponentesCurriculares'");
     }
 
     
-    public void excluirComponenteCurricular() {
+    static void excluirComponenteCurricular() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'excluirComponenteCurricular'");
     }
 
     
-    public void cadastrarTurma() {
+    static void cadastrarTurma() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'cadastrarTurma'");
     }
 
     
-    public void editarTurma() {
+    static void editarTurma() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'editarTurma'");
     }
 
     
-    public void verDadosDaTurma() {
+    static void verDadosDaTurma() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'verDadosDaTurma'");
     }
 
     
-    public void listarTurmas() {
+    static void listarTurmas() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listarTurmas'");
     }
 
     
-    public void listarTurmasPorSemestre() {
+    static void listarTurmasPorSemestre() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listarTurmasPorSemestre'");
     }
 
     
-    public void listarTurmasPorProfessor() {
+    static void listarTurmasPorProfessor() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listarTurmasPorProfessor'");
     }
 
     
-    public void excluirTurma() {
+    static void excluirTurma() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'excluirTurma'");
     }
+
+/*IGNORAR LINHAS ABAIXO */
+
+//Arraylist de string com os nomes de todos os professores, componentes e ids dos componentes que possuem atualmente um vinculo a universidade, inicialmente para facilitar a 
+//Validação de dados, de busca, remoção e edição de dados
+private static ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arrays.asList("ÁDLLER DE OLIVEIRA GUIMARÃES","ALVARO ALVARES DE CARVALHO CESAR SOBRINHO", "ANTONIO DIEGO SILVA FARIAS","BRUNO FONTES DE SOUSA", "CLAUDIO ANDRES CALLEJAS OLGUIN",
+"CLAUDIO DE SOUZA ROCHA", "CLECIDA MARIA BEZERRA BESSA","VERÔNICA MARIA LIMA SILVA", "FELIPE TORRES LEITE", "GLAUBER BARRETO LUNA", "GLAYDSON F B DE OLIVEIRA", "HELDER FERNANDO DE ARAUJO OLIVEIRA", "HIDALYN THEODORY CLEMENTE MATTOS DE SOUZA", "JARBELE CASSIA DA SILVA COUTINHO", "KATIA CILENE DA SILVA SANTOS",
+"LAURO CESAR BEZERRA NOGUEIRA", "LAYSA MABEL DE OLIVEIRA FONTES", "LENARDO CHAVES E SILVA", "LINO MARTINS DE HOLANDA JUNIOR",
+"MONICA PAULA DE SOUSA", "NATHALEE CAVALCANTI DE ALMEIDA", "PAULO GUSTAVO DA SILVA", "PAULO HENRIQUE DAS CHAGAS SILVA", 
+"PEDRO THIAGO VALERIO DE SOUZA", "RAIMUNDO LEIRTON FREITAS MAIA", "REUDISMAM ROLIM DE SOUSA", "ROBSON LOCATELLI MACEDO", 
+"RODRIGO SOARES SEMENTE", "SHARON DANTAS DA CUNHA", "THATYARA FREIRE DE SOUZA", "THIAGO PEREIRA RIQUE", "VINICIUS SAMUEL VALERIO DE SOUZA", "WILLIAM VIEIRA GOMES"));
+
+private static ArrayList <String> bancoDeComponentesBTI = new ArrayList<>(Arrays.asList("ETICA E LEGISLACAO","ANALISE E EXPRESSAO TEXTUAL","CALCULO I","ALGORITMOS",
+"LABORATÓRIO DE ALGORITMOS","INTRODUÇÃO À COMPUTAÇÃO E AOS SISTEMAS DE INFORMAÇÃO","SEMINÁRIO DE INTRODUÇÃO AO CURSO","SOCIOLOGIA","ADMINISTRACAO E EMPREENDEDORISMO",
+"CALCULO II","GEOMETRIA ANALITICA","ALGORITMOS E ESTRUTURAS DE DADOS I", "LABORATÓRIO DE ALGORITMOS E ESTRUTURAS DE DADOS I","ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES",
+"ECONOMIA PARA ENGENHARIA","MATEMATICA DISCRETA", "SISTEMAS OPERACIONAIS", "ALGEBRA LINEAR", "NTRODUCAO AS FUNCOES DE VARIAS VARIAVEIS","ALGORITMOS E ESTRUTURAS DE DADOS II", 
+"LABORATÓRIO DE ALGORITMOS E ESTRUTURAS DE DADOS II", "REDES DE COMPUTADORES", "PROGRAMAÇÃO ORIENTADA A OBJETOS","BANCO DE DADOS", "ESTATISTICA", "FILOSOFIA DA CIENCIA E MET. CIENTIFICA",
+"ENGENHARIA DE SOFTWARE", "SISTEMAS DISTRIBUIDOS", "COMPUTAÇÃO GRÁFICA", "ANÁLISE E PROJETO DE SISTEMAS ORIENTADOS A OBJETOS", "MULTIMÍDIA", "DEPENDABILIDADE E SEGURANÇA",
+"TRABALHO DE CONCLUSÃO DE CURSO"));
+
+private static ArrayList <String> idsComponentes = new ArrayList<>(Arrays.asList("PAC0008","PAC0050", "PEX0101", "PEX1236", "PEX1237", "PEX1239","PEX1240", "PAC0178",
+"PAC0595","PEX0102","PEX0114", "PEX1241","PEX1243", "PEX1244", "PAC0701","PAM0324","PEX0093","PEX0096","PEX0117","PEX1246","PEX1247","PEX0041","PEX0130", "PEX1248",
+"PVE0004", "PAC0012", "PEX0162", "PEX0183","PEX1249","PEX1251", "PEX1253", "PEX1254", "PEX1260"));
     
 }
