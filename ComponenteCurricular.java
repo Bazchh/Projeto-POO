@@ -9,18 +9,13 @@ public class ComponenteCurricular {
     // Id para criar um componente curricular
     private String ID;
     // Id para buscar, comparar ou remover um componente curricular
-    private String idBusca;
     private LinkedList<Turma> turmaDaDisciplina = new LinkedList<>();
 
     public ComponenteCurricular(int cargaHoraria, String nome, String id) throws ValoresInvalidosPCargaHoraria, NomeDoComponenteInvalido {
         
         // Condições para definição da carga horaria de um componente curricular
-        if (cargaHoraria < 40) {
+        if (cargaHoraria != 30 && cargaHoraria != 60) {
            throw new ValoresInvalidosPCargaHoraria("Carga Horaria deve ser de 30 ou 60 horas para uma disciplina");
-        } 
-        
-        if (cargaHoraria >= 40) {
-            throw new ValoresInvalidosPCargaHoraria("Carga Horaria deve ser de 30 ou 60 horas para uma disciplina");
         } 
 
         if(nome.isEmpty()){
