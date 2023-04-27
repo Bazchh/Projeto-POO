@@ -6,7 +6,7 @@ import Exceções.NomeDoComponenteInvalido;
 import Exceções.ValoresInvalidosPCargaHoraria;
 import Exceções.NomeDoProfessorInvalidoException;
 public class Professor {
-    private final String identity = geradorAleatorioIdProfessor();
+    private final String id = geradorAleatorioIdProfessor();
     private String titulo;
     private String nome; // Variavel que armazena o nome do professor
     private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
@@ -134,7 +134,7 @@ public class Professor {
     
     //Getters and setters
     public String getId() {
-        return identity;
+        return id;
     }
 
     public String getNome() {
@@ -147,6 +147,14 @@ public class Professor {
 
     public int getCargaHoraria() {
         return cargaHoraria;
+    }
+
+    public String getTitulo(){
+        return titulo;
+    }
+
+    public void setTitulo(String titulo){
+        this.titulo = titulo;
     }
 
     public void setCargaHoraria(int cargaHoraria) {
@@ -195,7 +203,7 @@ public class Professor {
             str += "\n" + componentes.get(i).toString();
         }
 
-        return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.identity + "\nCarga Horaria: " + cargaHoraria
+        return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.id + "\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
     }
 
