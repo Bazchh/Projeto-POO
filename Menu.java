@@ -18,15 +18,18 @@ private static ArrayList <String> bancoDeProfessoresAtuais = new ArrayList<>(Arr
 "RODRIGO SOARES SEMENTE", "SHARON DANTAS DA CUNHA", "THATYARA FREIRE DE SOUZA", "THIAGO PEREIRA RIQUE", "VINICIUS SAMUEL VALERIO DE SOUZA", "WILLIAM VIEIRA GOMES"));
 
 //Metodo que cadastra um professor em nosso banco de dados
-static void cadastrarProfessor() throws NomeDoProfessorInvalidoException {
+static void cadastrarProfessor() {
 
         Scanner entrada = new Scanner(System.in); //Scanner para ler dados de entrada para preencher os dados do professor a ser cadastrado de acordo com o usuario
+        
+    try{
         String nomeDoProfessor; //Atributo onde será armazenado o nome do professor a ser cadastrado e passsado para dentro do construtor da classe professor
         String tituloDoProfessor; //Atributo onde será armazenado o titulo do professor a ser cadastrado e passado para dentro do construtor da classe professor
         System.out.println("Insira o nome do professor a ser cadastrado: "); 
         nomeDoProfessor = entrada.nextLine(); //Recebendo dados do nome
         System.out.println("Insira o titulo do professor a ser cadastrado: ");
         tituloDoProfessor = entrada.nextLine(); // Recebendo dados do titulo
+        
         //instanciando o objeto da classe professor com os dados passados
         Professor professor = new Professor(nomeDoProfessor, tituloDoProfessor);
         //Caso o nome informado esteja dentro da nossa arraylist de string com nome de todos os professor com vinculo atualmente
@@ -36,10 +39,12 @@ static void cadastrarProfessor() throws NomeDoProfessorInvalidoException {
         } else {
             //Caso o professor o nome do professor não esteja dentro da nossa arraylist, mostramos a seguinte mensagem
             System.out.println("O professor a ser cadastrado no banco de dados não faz parte do banco de professores do banco de dados atual da universidade");
-        }
-
-        entrada.close();
-
+         } 
+       } catch (NomeDoProfessorInvalidoException e) {
+            e.printStackTrace();
+       } finally{
+            entrada.close();
+       }     
     }
     //Metodo para editar os dados de um professor
     public static void editarProfessor() {
@@ -52,7 +57,7 @@ static void cadastrarProfessor() throws NomeDoProfessorInvalidoException {
         Professor professor  = new Professor(nomeDoProfessor);
         if(bancoDeProfessoresAtuais.contains(nomeDoProfessor)){
             /*utilizar comando update aqui para editar o professor caso ele exista no banco de dados*/
-        } else  {
+        } else  { 
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
 
@@ -62,6 +67,7 @@ static void cadastrarProfessor() throws NomeDoProfessorInvalidoException {
     
     public void verDadosProfessor() {
         Scanner entrada = new Scanner(System.in);
+        try {
         String nomeDoProfessor;
         System.out.println("Insira o nome do professor para ver os seus dados: ");
         nomeDoProfessor = entrada.nextLine();
@@ -71,8 +77,13 @@ static void cadastrarProfessor() throws NomeDoProfessorInvalidoException {
         } else  {
             System.out.println("O professor buscado não existe no banco de dados da universidade");
         }
-
-        entrada.close();
+            }
+        catch (NomeDoProfessorInvalidoException e) { 
+            e.printStackTrace();
+        } finally {
+            entrada.close();
+        }
+        
     }
 
     
