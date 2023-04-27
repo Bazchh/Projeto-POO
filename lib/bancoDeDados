@@ -1,0 +1,24 @@
+create table professor 
+		(id_prof serial,
+		 id_p int,
+		 nome varchar (50),
+		 titulo varchar(20),
+		 carga_horaria int,
+		 primary key (id_prof));
+create table componentes 
+		(id_comp serial,
+		 id_prof int,
+	     nomeComp varchar(30),
+		 id_p varchar(8),		 
+		 carga_horaria int,
+		primary key(id_comp),
+		foreign key (id_prof) references professor);
+create table turma
+		(id_turma serial,
+		 id_comp int,
+		 id_prof int,
+		 nome_turma varchar(30),
+		id_t varchar(10),
+		primary key (id_turma),
+		foreign key (id_comp) references componentes,
+		foreign key (id_prof) references professor);
