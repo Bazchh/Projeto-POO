@@ -1,8 +1,6 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import Exceções.NomeDoComponenteInvalido;
-import Exceções.NomeDoProfessorInvalidoException;
+import Exceções.DadosDoProfessorInvalidoException;
 import Exceções.ValoresInvalidosPCargaHoraria;
 
 public class Menu {
@@ -22,6 +20,7 @@ public class Menu {
                                                   // professor a ser cadastrado de acordo com o usuario
         PreparedStatement instrucao;
         try {
+            int id;
             String nomeDoProfessor; // Atributo onde será armazenado o nome do professor a ser cadastrado e passsado
                                     // para dentro do construtor da classe professor
             String tituloDoProfessor; // Atributo onde será armazenado o titulo do professor a ser cadastrado e
@@ -30,14 +29,16 @@ public class Menu {
             nomeDoProfessor = entrada.nextLine(); // Recebendo dados do nome
             System.out.print("Insira o titulo do professor a ser cadastrado: ");
             tituloDoProfessor = entrada.nextLine(); // Recebendo dados do titulo
-
+            System.out.println("Insira o id do professor a ser cadastrado: ");
+            id = entrada.nextInt();
+            clearBuffer(entrada);
             // instanciando o objeto da classe professor com os dados passados
-            Professor professor = new Professor(nomeDoProfessor, tituloDoProfessor);
+            Professor professor = new Professor(nomeDoProfessor, tituloDoProfessor, id);
             // Caso o nome informado esteja dentro da nossa arraylist de string com nome de
             // todos os professor com vinculo atualmente
             // Podemos prosseguir e adicionar o professor e seus respectivos dados para o
             // banco de dados
-            if (bancoDeProfessoresAtuais.contains(nomeDoProfessor)) {
+            if (!professores.contains(professor)) {
                 //Atributo do tipo connection usado para realziar a conexão com nosso banco de dados
                 Connection connection;
                 //String usada para realizar a inserção de dados no banco de dados
@@ -48,7 +49,7 @@ public class Menu {
                     //Passando para o atributo instrucão onde ela deve realizar as instruções passadas
                     instrucao = connection.prepareStatement(sql);
                     //Realizando definição de valores a serem inseridos no banco de dados com base nos campos definidos na string "sql" (id_p,nome,titulo,carga_horaria)
-                    instrucao.setString(1, professor.getId());
+                    instrucao.setInt(1, professor.getId());
                     instrucao.setString(2, professor.getNome());
                     instrucao.setString(3, professor.getTitulo());
                     instrucao.setInt(4, professor.getCargaHoraria());
@@ -61,7 +62,8 @@ public class Menu {
                         System.out.println("A inserção falhou");
                     }
                     
-                     //Fechando conexão com o banco de dados para que não seja ocupado recurso do banco de dados
+                     //Fechando conexão com o banco de dados para que não seja ocupado recurso do banco de dados e adicionando objeto professor a nossa arraylist de professores
+                    professores.add(professor);
                     instrucao.close();
                     connection.close();
                 } catch (SQLException e) {
@@ -71,9 +73,11 @@ public class Menu {
                 // Caso o professor o nome do professor não esteja dentro da nossa arraylist,
                 // mostramos a seguinte mensagem
                 System.out.println(
-                        "O professor a ser cadastrado no banco de dados não faz parte do banco de professores do banco de dados atual da universidade");
+                        "O professor a ser cadastrado no banco de dados já está cadastrado");
             }
-        } catch (NomeDoProfessorInvalidoException e) {
+        } catch (InputMismatchException e){
+            e.printStackTrace();
+        } catch (DadosDoProfessorInvalidoException e) {
             e.printStackTrace();
         } finally {
             //Fecha o scanner
@@ -88,44 +92,33 @@ public class Menu {
         // Atributo para armazenar o nome do professor a ser buscado para editar
 
         try {
+            int idDoProfessor;
             String nomeDoProfessor;
-            System.out.println("Insira o nome do professor a ser editado: ");
-            nomeDoProfessor = entrada.nextLine();
-            Professor professor = new Professor(nomeDoProfessor);
-            if (bancoDeProfessoresAtuais.contains(nomeDoProfessor)) {
+            System.out.println("Insira o id do professor a ser editado: ");
+            idDoProfessor = entrada.nextInt();
+            clearBuffer(entrada);
                 
                 try {
                     //Atributo do tipo connection usado para realziar a conexão com nosso banco de dados
                 Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
                 //String usada para realizar a inserção de dados no banco de dados
                 String sql;
-                int op;
-                System.out.println("O que deseja atualizar do professor "+ professor.getNome()+"?");
+                System.out.println("O que deseja atualizar do professor?");
                 System.out.println("1 - Componentes");
                 System.out.println("2 - Turmas");
-                System.out.println("3 - Nome e titulo do professor");
-                op = entrada.nextInt();
-                clearBuffer(entrada);
-                if(op == 1){
-
-                }
-
-               /*  else if(){
-
-                }*/
+                System.out.println("3 - Nome e titulo do professor");;
                 
-                else if(op == 3){
                 String tituloDoProfessor;
                 System.out.println("Insira o nome do professor para atualizar o nome do professor selecionado: ");
                 nomeDoProfessor = entrada.nextLine();
                 System.out.println("Insira o titulo para atualizar o titulo do professor selecionado: ");
                 tituloDoProfessor = entrada.nextLine();
-                sql = "UPDATE professor SET nome = ?, titulo = ? WHERE nome = ?";
+                sql = "UPDATE professor SET nome = ?, titulo = ? WHERE id_p = ?";
                 PreparedStatement instrucao;
                 instrucao = connection.prepareStatement(sql);
                 instrucao.setString(1, nomeDoProfessor);
                 instrucao.setString(2, tituloDoProfessor);
-                instrucao.setString(3, professor.getNome());
+                instrucao.setInt(3, idDoProfessor);
                 int linhasAfetadas = instrucao.executeUpdate();
                 if(linhasAfetadas > 0){
                     System.out.println("Atualizado com sucesso");
@@ -134,66 +127,62 @@ public class Menu {
                 }
                 instrucao.close();
                 connection.close();
-
-                }
                 
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-            } else {
-                System.out.println("O professor buscado não existe no banco de dados da universidade");
-            }
-        } catch (NomeDoProfessorInvalidoException e) {
-            e.printStackTrace();
+             
         } finally {
             entrada.close();
         }
     }
 
-    static void verDadosDoProfessor() {
+    static Professor verDadosDoProfessor() {
         Scanner entrada = new Scanner(System.in);
-        try {
-            String nomeDoProfessor;
-            System.out.println("Insira o nome do professor para ver os seus dados: ");
-            nomeDoProfessor = entrada.nextLine();
-            Professor professor = new Professor(nomeDoProfessor);
-            
+        Professor professor = null;
+        try {           
+            int idDoProfessor;
+            System.out.println("Insira o id do professor para ver os seus dados: ");
+            idDoProfessor = entrada.nextInt();
+            clearBuffer(entrada);
                 try {
+                    
                     Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
-                    String sql = "SELECT id_prof, id_p, nome, titulo, carga_horaria FROM professor WHERE nome = ?";
+                    String sql = "SELECT id_prof, id_p, nome, titulo, carga_horaria FROM professor WHERE id_p = ?";
                     PreparedStatement instrucao = connection.prepareStatement(sql); 
-                    instrucao.setString(1, professor.getNome());
+                    instrucao.setInt(1, idDoProfessor);
                     ResultSet consulta = instrucao.executeQuery(); 
                     while(consulta.next()){
                     int idKey = consulta.getInt("id_prof");
                     int id_p = consulta.getInt("id_p");
-                    nomeDoProfessor = consulta.getString("nome");
+                    String nomeDoProfessor = consulta.getString("nome");
                     String tituloDoProfessor = consulta.getString("titulo");
                     int cargaHoraria = consulta.getInt("carga_horaria");
+                    professor = new Professor(nomeDoProfessor, tituloDoProfessor, id_p);
+                    String sql2 = "SELECT id_comp, id_prof, nomeComp, id_p";
+                    //Usar o select acima para selecionar os componentes curriculares do professor correspondente para imprimi-los usando objetos
 
-                    System.out.println("Nome do professor: "+ nomeDoProfessor);
+                    /*System.out.println("Nome do professor: "+ nomeDoProfessor);
                     System.out.println("ID aleatorio do professor: "+id_p);
                     System.out.println("ID KEY do professor: "+ idKey);
                     System.out.println("Titulo do professor: "+tituloDoProfessor);
-                    System.out.println("Carga horaria do professor: "+cargaHoraria);
+                    System.out.println("Carga horaria do professor: "+cargaHoraria);*/
+
                     }
                     
-                    
-
                 } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (DadosDoProfessorInvalidoException e) {
                     e.printStackTrace();
                 }
             
-        } catch (NomeDoProfessorInvalidoException e) {
-            e.printStackTrace();
         } finally {
             entrada.close();
         }
-
+        return professor;
     }
 
     static void listarProfessores() {
-        ArrayList<Professor> listaDeProfessores = new ArrayList<>();
 
     }
 
@@ -201,20 +190,11 @@ public class Menu {
         Scanner entrada = new Scanner(System.in);
 
         try {
-            String nomeDoProfessor;
-            System.out.println("Insira o nome do professor a ser excluido: ");
-            nomeDoProfessor = entrada.nextLine();
-            Professor professor = new Professor(nomeDoProfessor);
-            if (bancoDeProfessoresAtuais.contains(nomeDoProfessor)) {
-                /*
-                 * utilizar comando drop aqui para excluir o professor caso ele exista no banco
-                 * de dados
-                 */
-            } else {
-                System.out.println("O professor buscado não existe no banco de dados da universidade");
-            }
-        } catch (NomeDoProfessorInvalidoException e) {
-            e.printStackTrace();
+            int idDoProfessor;
+            System.out.println("Insira o id do professor a ser excluido: ");
+            idDoProfessor = entrada.nextInt();
+           
+           
         } finally {
             entrada.close();
         }
@@ -228,13 +208,13 @@ public class Menu {
             try {
                 // Variaveis que armazenam os dados do componente curricular a ser cadastrado
                 String nomeDoComponenteCurricular;
-                String idComponente;
+                int idComponente;
                 int cargaHorariaComponente = 0;
                 System.out.println("Insira os dados do componente curricular a ser cadastrado: ");
                 System.out.print("\nNome do componente curricular: ");
                 nomeDoComponenteCurricular = entrada.nextLine();
                 System.out.print("\nID do componente curricular: ");
-                idComponente = entrada.nextLine();
+                idComponente = entrada.nextInt();
                 System.out.print("\nCarga horaria do componente curricular: ");
                 cargaHorariaComponente = entrada.nextInt();
               
@@ -291,13 +271,13 @@ public class Menu {
         ComponenteCurricular componente = null;
         try {
             String nomeDoComponente;
-            String idDoComponente;
+            int idDoComponente;
             System.out.println("Insira o nome do componente a qual quer editar: ");
             nomeDoComponente = entrada.nextLine();
             System.out.println("Insira o id do componente a qual quer editar: ");
-            idDoComponente = entrada.nextLine();
+            idDoComponente = entrada.nextInt();
             componente = new ComponenteCurricular(nomeDoComponente, idDoComponente);
-            if (idsComponentes.contains(idDoComponente)) {
+            if (componentesBTI.contains(idDoComponente)) {
 
             } else {
                 System.out.println("O componente curricular informado não está na lista dos componentes cadastrados");
@@ -365,42 +345,11 @@ public class Menu {
     // dos componentes que possuem atualmente um vinculo a universidade,
     // inicialmente para facilitar a
     // Validação de dados, de busca, remoção e edição de dados
-    private static ArrayList<String> bancoDeProfessoresAtuais = new ArrayList<>(
-            Arrays.asList("ÁDLLER DE OLIVEIRA GUIMARÃES", "ALVARO ALVARES DE CARVALHO CESAR SOBRINHO",
-                    "ANTONIO DIEGO SILVA FARIAS", "BRUNO FONTES DE SOUSA", "CLAUDIO ANDRES CALLEJAS OLGUIN",
-                    "CLAUDIO DE SOUZA ROCHA", "CLECIDA MARIA BEZERRA BESSA", "VERÔNICA MARIA LIMA SILVA",
-                    "FELIPE TORRES LEITE", "GLAUBER BARRETO LUNA", "GLAYDSON F B DE OLIVEIRA",
-                    "HELDER FERNANDO DE ARAUJO OLIVEIRA", "HIDALYN THEODORY CLEMENTE MATTOS DE SOUZA",
-                    "JARBELE CASSIA DA SILVA COUTINHO", "KATIA CILENE DA SILVA SANTOS",
-                    "LAURO CESAR BEZERRA NOGUEIRA", "LAYSA MABEL DE OLIVEIRA FONTES", "LENARDO CHAVES E SILVA",
-                    "LINO MARTINS DE HOLANDA JUNIOR",
-                    "MONICA PAULA DE SOUSA", "NATHALEE CAVALCANTI DE ALMEIDA", "PAULO GUSTAVO DA SILVA",
-                    "PAULO HENRIQUE DAS CHAGAS SILVA",
-                    "PEDRO THIAGO VALERIO DE SOUZA", "RAIMUNDO LEIRTON FREITAS MAIA", "REUDISMAM ROLIM DE SOUSA",
-                    "ROBSON LOCATELLI MACEDO",
-                    "RODRIGO SOARES SEMENTE", "SHARON DANTAS DA CUNHA", "THATYARA FREIRE DE SOUZA",
-                    "THIAGO PEREIRA RIQUE", "VINICIUS SAMUEL VALERIO DE SOUZA", "WILLIAM VIEIRA GOMES"));
+    private static ArrayList<Professor> professores = new ArrayList<>();
 
-    private static ArrayList<String> bancoDeComponentesBTI = new ArrayList<>(
-            Arrays.asList("ETICA E LEGISLACAO", "ANALISE E EXPRESSAO TEXTUAL", "CALCULO I", "ALGORITMOS",
-                    "LABORATÓRIO DE ALGORITMOS", "INTRODUÇÃO À COMPUTAÇÃO E AOS SISTEMAS DE INFORMAÇÃO",
-                    "SEMINÁRIO DE INTRODUÇÃO AO CURSO", "SOCIOLOGIA", "ADMINISTRACAO E EMPREENDEDORISMO",
-                    "CALCULO II", "GEOMETRIA ANALITICA", "ALGORITMOS E ESTRUTURAS DE DADOS I",
-                    "LABORATÓRIO DE ALGORITMOS E ESTRUTURAS DE DADOS I", "ARQUITETURA E ORGANIZAÇÃO DE COMPUTADORES",
-                    "ECONOMIA PARA ENGENHARIA", "MATEMATICA DISCRETA", "SISTEMAS OPERACIONAIS", "ALGEBRA LINEAR",
-                    "NTRODUCAO AS FUNCOES DE VARIAS VARIAVEIS", "ALGORITMOS E ESTRUTURAS DE DADOS II",
-                    "LABORATÓRIO DE ALGORITMOS E ESTRUTURAS DE DADOS II", "REDES DE COMPUTADORES",
-                    "PROGRAMAÇÃO ORIENTADA A OBJETOS", "BANCO DE DADOS", "ESTATISTICA",
-                    "FILOSOFIA DA CIENCIA E MET. CIENTIFICA",
-                    "ENGENHARIA DE SOFTWARE", "SISTEMAS DISTRIBUIDOS", "COMPUTAÇÃO GRÁFICA",
-                    "ANÁLISE E PROJETO DE SISTEMAS ORIENTADOS A OBJETOS", "MULTIMÍDIA", "DEPENDABILIDADE E SEGURANÇA",
-                    "TRABALHO DE CONCLUSÃO DE CURSO"));
+    private static ArrayList<ComponenteCurricular> componentesBTI = new ArrayList<>();
 
-    private static ArrayList<String> idsComponentes = new ArrayList<>(
-            Arrays.asList("PAC0008", "PAC0050", "PEX0101", "PEX1236", "PEX1237", "PEX1239", "PEX1240", "PAC0178",
-                    "PAC0595", "PEX0102", "PEX0114", "PEX1241", "PEX1243", "PEX1244", "PAC0701", "PAM0324", "PEX0093",
-                    "PEX0096", "PEX0117", "PEX1246", "PEX1247", "PEX0041", "PEX0130", "PEX1248",
-                    "PVE0004", "PAC0012", "PEX0162", "PEX0183", "PEX1249", "PEX1251", "PEX1253", "PEX1254", "PEX1260"));
+    private static ArrayList<Turma> turmas = new ArrayList<>();
 
     private static void clearBuffer(Scanner scanner) {
         if (scanner.hasNextLine()) {
