@@ -1,6 +1,6 @@
 package Exceções;
 public class NomeDoProfessorInvalidoException extends Exception {
-    NomeDoProfessorInvalidoException(String mensagem){
+    public NomeDoProfessorInvalidoException(String mensagem){
         super(mensagem);
     }
 }
