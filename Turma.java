@@ -7,7 +7,7 @@ public class Turma {
     // ao id da turma
     private Calendar cal = GregorianCalendar.getInstance();
     // Adicionando o ano atual do calendario + 6 numeros gerados aleatoriamente
-    private final String iD = "" + cal.get(Calendar.YEAR) + geradorAleatorio();;
+    private final String iD = "" + cal.get(Calendar.YEAR) + geradorAleatorio();
     private String nomeDaTurma;
 
     public Turma(String nomeDaTurma) {

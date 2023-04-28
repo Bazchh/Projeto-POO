@@ -1,12 +1,12 @@
 
+import java.util.InputMismatchException;
 import java.util.LinkedList;
-import java.util.Random;
 
 import Exceções.NomeDoComponenteInvalido;
 import Exceções.ValoresInvalidosPCargaHoraria;
-import Exceções.NomeDoProfessorInvalidoException;
+import Exceções.DadosDoProfessorInvalidoException;
 public class Professor {
-    private final String id = geradorAleatorioIdProfessor();
+    private int id;
     private String titulo;
     private String nome; // Variavel que armazena o nome do professor
     private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
@@ -18,27 +18,33 @@ public class Professor {
     }
 
     // Construtor
-    public Professor(String nome, String titulo) throws NomeDoProfessorInvalidoException {
+    public Professor(String nome, String titulo, int id) throws DadosDoProfessorInvalidoException, InputMismatchException {
         if(nome.isEmpty()){
-            throw new NomeDoProfessorInvalidoException("Nome do professor não deve estar vazio");
+            throw new DadosDoProfessorInvalidoException("Nome do professor não deve estar vazio");
         }
-        
+
+        if (Character.isLetter((char) id)) {
+            throw new InputMismatchException(
+                    "Você digitou uma letra, mas deveria ser um caractere alfanumérico!");
+        }
+        this.id = id;
         this.nome = nome;
         this.titulo = titulo;
     }
 
-    public Professor(String nome) throws NomeDoProfessorInvalidoException{
-        if(nome.isEmpty()){
-            throw new NomeDoProfessorInvalidoException("Nome do professor não deve estar vazio");
+    public Professor(int id) throws InputMismatchException{
+        if (Character.isLetter((char) id)) {
+            throw new InputMismatchException(
+                    "Você digitou uma letra, mas deveria ser um caractere alfanumérico!");
         }
-
-        this.nome = nome;
+        this.id = id;
+        this.nome = "";
         this.titulo = "";
     }
 
     // Metodo que adiciona um componente curricular na lista de componentes do
     // professor
-    public void adicionaComponenteCurricular(int cargaHoraria, String nome, String iD) {
+    public void adicionaComponenteCurricular(int cargaHoraria, String nome, int iD) {
         ComponenteCurricular componente = null;
         try {
             componente = new ComponenteCurricular(cargaHoraria,nome,iD);
@@ -70,7 +76,7 @@ public class Professor {
     }
 
     // Metodo para remover o componente curricular da grade de um professor
-    public void removerComponenteCurricular(String nome, String iD) {
+    public void removerComponenteCurricular(String nome, int iD) {
         ComponenteCurricular componente = null;
         try {
             componente = new ComponenteCurricular(nome, iD);
@@ -107,7 +113,7 @@ public class Professor {
 
     //Metodo para adicionar uma turma ao componente curricular do professor
     //O usuario deve inserir a qual componente do professor ele quer adicionar uma turma, assim o professor irá ficar cadastrado na turma como o professor da mesma
-    public void adicionarTurmaAoComponenteDoProfessor(String nome, String id){
+    public void adicionarTurmaAoComponenteDoProfessor(String nome, int id){
         //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
         ComponenteCurricular componente = null;
         try {
@@ -133,7 +139,7 @@ public class Professor {
     }
     
     //Getters and setters
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -173,7 +179,7 @@ public class Professor {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+        result = prime * result + id;
         return result;
     }
 
@@ -186,10 +192,7 @@ public class Professor {
         if (getClass() != obj.getClass())
             return false;
         Professor other = (Professor) obj;
-        if (nome == null) {
-            if (other.nome != null)
-                return false;
-        } else if (!nome.equals(other.nome))
+        if (id != other.id)
             return false;
         return true;
     }
@@ -205,13 +208,6 @@ public class Professor {
 
         return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.id + "\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
-    }
-
-    private static String geradorAleatorioIdProfessor() {
-        Random random = new Random();
-        int n = random.nextInt(90000);
-        String str = Integer.toString(n);
-        return str;
     }
 
 }

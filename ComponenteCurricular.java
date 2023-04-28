@@ -7,11 +7,11 @@ public class ComponenteCurricular {
     private int cargaHoraria;
     private String nome;
     // Id para criar um componente curricular
-    private String ID;
+    private int ID;
     // Id para buscar, comparar ou remover um componente curricular
     private LinkedList<Turma> turmaDaDisciplina = new LinkedList<>();
 
-    public ComponenteCurricular(int cargaHoraria, String nome, String id) throws ValoresInvalidosPCargaHoraria, NomeDoComponenteInvalido {
+    public ComponenteCurricular(int cargaHoraria, String nome, int id) throws ValoresInvalidosPCargaHoraria, NomeDoComponenteInvalido {
         
         // Condições para definição da carga horaria de um componente curricular
         if (cargaHoraria != 30 && cargaHoraria != 60) {
@@ -30,7 +30,7 @@ public class ComponenteCurricular {
 
     // Construtor usado somente para pesquisar e comparar o objeto instanciado a
     // qual se quer remover ou adicionar
-    public ComponenteCurricular(String nome, String idBusca) throws NomeDoComponenteInvalido{
+    public ComponenteCurricular(String nome, int idBusca) throws NomeDoComponenteInvalido{
         
         if(nome.isEmpty()){
             throw new NomeDoComponenteInvalido("Nome do componente não deve estar vazio");
@@ -68,11 +68,11 @@ public class ComponenteCurricular {
         this.nome = nome;
     }
 
-    public String getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(String iD) {
+    public void setID(int iD) {
         ID = iD;
     }
 
@@ -88,9 +88,10 @@ public class ComponenteCurricular {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((ID == null) ? 0 : ID.hashCode());
+        result = prime * result + ID;
         return result;
     }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -101,13 +102,11 @@ public class ComponenteCurricular {
         if (getClass() != obj.getClass())
             return false;
         ComponenteCurricular other = (ComponenteCurricular) obj;
-        if (ID == null) {
-            if (other.ID != null)
-                return false;
-        } else if (!ID.equals(other.ID))
+        if (ID != other.ID)
             return false;
         return true;
     }
+
 
     @Override
     public String toString() {
