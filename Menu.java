@@ -65,7 +65,6 @@ public class Menu {
                     instrucao.close();
                     connection.close();
                 } catch (SQLException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             } else {
@@ -94,10 +93,53 @@ public class Menu {
             nomeDoProfessor = entrada.nextLine();
             Professor professor = new Professor(nomeDoProfessor);
             if (bancoDeProfessoresAtuais.contains(nomeDoProfessor)) {
-                /*
-                 * utilizar comando update aqui para editar o professor caso ele exista no banco
-                 * de dados
-                 */
+                
+                try {
+                    //Atributo do tipo connection usado para realziar a conexão com nosso banco de dados
+                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+                //String usada para realizar a inserção de dados no banco de dados
+                String sql;
+                int op;
+                System.out.println("O que deseja atualizar do professor "+ professor.getNome()+"?");
+                System.out.println("1 - Componentes");
+                System.out.println("2 - Turmas");
+                System.out.println("3 - Nome e titulo do professor");
+                op = entrada.nextInt();
+                clearBuffer(entrada);
+                if(op == 1){
+
+                }
+
+               /*  else if(){
+
+                }*/
+                
+                else if(op == 3){
+                String tituloDoProfessor;
+                System.out.println("Insira o nome do professor para atualizar o nome do professor selecionado: ");
+                nomeDoProfessor = entrada.nextLine();
+                System.out.println("Insira o titulo para atualizar o titulo do professor selecionado: ");
+                tituloDoProfessor = entrada.nextLine();
+                sql = "UPDATE professor SET nome = ?, titulo = ? WHERE nome = ?";
+                PreparedStatement instrucao;
+                instrucao = connection.prepareStatement(sql);
+                instrucao.setString(1, nomeDoProfessor);
+                instrucao.setString(2, tituloDoProfessor);
+                instrucao.setString(3, professor.getNome());
+                int linhasAfetadas = instrucao.executeUpdate();
+                if(linhasAfetadas > 0){
+                    System.out.println("Atualizado com sucesso");
+                } else{
+                    System.out.println("Atualização falhou");
+                }
+                instrucao.close();
+                connection.close();
+
+                }
+                
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } else {
                 System.out.println("O professor buscado não existe no banco de dados da universidade");
             }
@@ -108,21 +150,40 @@ public class Menu {
         }
     }
 
-    static void verDadosProfessor() {
+    static void verDadosDoProfessor() {
         Scanner entrada = new Scanner(System.in);
         try {
             String nomeDoProfessor;
             System.out.println("Insira o nome do professor para ver os seus dados: ");
             nomeDoProfessor = entrada.nextLine();
             Professor professor = new Professor(nomeDoProfessor);
-            if (bancoDeProfessoresAtuais.contains(nomeDoProfessor)) {
-                /*
-                 * utilizar comando select aqui para ver os dados do professor caso ele exista
-                 * no banco de dados
-                 */
-            } else {
-                System.out.println("O professor buscado não existe no banco de dados da universidade");
-            }
+            
+                try {
+                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+                    String sql = "SELECT id_prof, id_p, nome, titulo, carga_horaria FROM professor WHERE nome = ?";
+                    PreparedStatement instrucao = connection.prepareStatement(sql); 
+                    instrucao.setString(1, professor.getNome());
+                    ResultSet consulta = instrucao.executeQuery(); 
+                    while(consulta.next()){
+                    int idKey = consulta.getInt("id_prof");
+                    int id_p = consulta.getInt("id_p");
+                    nomeDoProfessor = consulta.getString("nome");
+                    String tituloDoProfessor = consulta.getString("titulo");
+                    int cargaHoraria = consulta.getInt("carga_horaria");
+
+                    System.out.println("Nome do professor: "+ nomeDoProfessor);
+                    System.out.println("ID aleatorio do professor: "+id_p);
+                    System.out.println("ID KEY do professor: "+ idKey);
+                    System.out.println("Titulo do professor: "+tituloDoProfessor);
+                    System.out.println("Carga horaria do professor: "+cargaHoraria);
+                    }
+                    
+                    
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            
         } catch (NomeDoProfessorInvalidoException e) {
             e.printStackTrace();
         } finally {
