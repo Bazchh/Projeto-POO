@@ -235,7 +235,7 @@ public class Menu {
 
     }
 
-    static void cadastrarComponenteCurricular() {
+    static void cadastrarComponenteCurricular() throws InputMismatchException {
         String r = "S";
         Scanner entrada = new Scanner(System.in);
         while (r.equals("S") || r.equals("s") || r.equals("sim")) {
@@ -276,9 +276,9 @@ public class Menu {
                 // Caso o usuario realmente deseje inserir no BD o componente entramos neste
                 // laço if
                 if (r.equals("S") || r.equals("s") || r.equals("sim")) {
-                    /* adiciona o componente inserido ao banco */
-                    System.out.println("Inserido com sucesso");
-
+                   Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+                   String sql = "INSERT INTO Componentes (inserir aqui colunas da tabela de componentes) VALUES (?,?,?,?)";
+                   PreparedStatement instrucao = connection.prepareStatement(sql);
                 }
 
                 // Logo depois perguntamos se o mesmo deseja inserir mais algum componente, se
@@ -295,7 +295,8 @@ public class Menu {
             // while e retorna ao menu
             // Usado na main
 
-        }
+        } 
+        
         entrada.close();
 
     }
