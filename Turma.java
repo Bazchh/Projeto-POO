@@ -9,18 +9,24 @@ public class Turma {
     // Adicionando o ano atual do calendario + 6 numeros gerados aleatoriamente
     private final String iD = "" + cal.get(Calendar.YEAR) + geradorAleatorio();
     private String nomeDaTurma;
+    private String semestre;
 
-    public Turma(String nomeDaTurma) {
+    public Turma(String nomeDaTurma, String semestre) {
         this.nomeDaTurma = nomeDaTurma;
+        this.semestre = semestre;
     }
 
     //Getters and setters
     public String getiD() {
-        return iD;
+        return this.iD;
     }
 
+    public String getSemestre(){
+        return this.semestre;
+    }
+    
     public String getNomeDaTurma() {
-        return nomeDaTurma;
+        return this.nomeDaTurma;
     }
 
     public void setNomeDaTurma(String nomeDaTurma) {
