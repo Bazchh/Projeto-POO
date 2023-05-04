@@ -89,30 +89,29 @@ public class Menu {
         // §canner para ler dados a serem modificados no professor selecionado
         Scanner entrada = new Scanner(System.in);
         // Atributo para armazenar o nome do professor a ser buscado para editar
-
-        try {
-            int idDoProfessor;
-            String nomeDoProfessor;
-            System.out.println("Insira o id do professor a ser editado: ");
-            idDoProfessor = entrada.nextInt();
-            clearBuffer(entrada);
-                
+        int idDoProfessor;
+        System.out.println("Insira o id do professor a ser editado: ");
+        idDoProfessor = entrada.nextInt();
+        clearBuffer(entrada);
+        Professor professor = verDadosDoProfessor(idDoProfessor);
+        try {   
+            String nomeDoProfessor;                    
                 try {
                     //Atributo do tipo connection usado para realizar a conexão com nosso banco de dados
                 Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
-                //String usada para realizar a inserção de dados no banco de dados
-                String sql;
-                System.out.println("O que deseja atualizar do professor?");
-                System.out.println("1 - Componentes");
-                System.out.println("2 - Turmas");
-                System.out.println("3 - Nome e titulo do professor");;
-                
+                //String usada para realizar a inserção de dados no banco de dados                                        
                 String tituloDoProfessor;
-                System.out.println("Insira o nome do professor para atualizar o nome do professor selecionado: ");
+                System.out.println("Insira o nome do professor para atualizar o nome do professor selecionado, caso deseje manter o valor atual pressione enter: ");
                 nomeDoProfessor = entrada.nextLine().trim();
-                System.out.println("Insira o titulo para atualizar o titulo do professor selecionado: ");
+                if(nomeDoProfessor.isEmpty()){
+                    nomeDoProfessor = professor.getNome();
+                }
+                System.out.println("Insira o titulo para atualizar o titulo do professor selecionado, caso deseje manter o valor atual pressione enter: ");
                 tituloDoProfessor = entrada.nextLine().trim();
-                sql = "UPDATE professor SET nome = ?, titulo = ? WHERE id_p = ?";
+                if(tituloDoProfessor.isEmpty()){
+                    tituloDoProfessor = professor.getTitulo();
+                }
+                String sql = "UPDATE professor SET nome = ?, titulo = ? WHERE id_p = ?";
                 PreparedStatement instrucao;
                 instrucao = connection.prepareStatement(sql);
                 instrucao.setString(1, nomeDoProfessor);
@@ -136,14 +135,15 @@ public class Menu {
         }
     }
 
-    static Professor verDadosDoProfessor() {
+    static Professor verDadosDoProfessor(int idProfessor) {
         Scanner entrada = new Scanner(System.in);
         Professor professor = null;
-        try {           
-            int idDoProfessor;
-            System.out.println("Insira o id do professor para ver os seus dados: ");
-            idDoProfessor = entrada.nextInt();
+        if(idProfessor == 0){
+            System.out.println("Insira o id do professor para ver seus dados: ");
+            idProfessor = entrada.nextInt();
             clearBuffer(entrada);
+        }
+        try {           
                 try {
                     //Preparando conxexão com o banco de dados
                     Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
