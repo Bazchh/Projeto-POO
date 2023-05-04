@@ -99,7 +99,7 @@ public class Menu {
             clearBuffer(entrada);
                 
                 try {
-                    //Atributo do tipo connection usado para realziar a conexão com nosso banco de dados
+                    //Atributo do tipo connection usado para realizar a conexão com nosso banco de dados
                 Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
                 //String usada para realizar a inserção de dados no banco de dados
                 String sql;
@@ -183,7 +183,29 @@ public class Menu {
     }
 
     static void listarProfessores() {
-
+        ArrayList <Professor> professores = new Arraylist<>();
+        try{ 
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+        String sql = "SELECT * FROM professor";
+        PreparedStatement instrucao = connection.prepareStatement(sql);
+        ResultSet consulta = instrucao.executeQuery();
+        while(consulta.next()){
+         int idKey = consulta.getInt("id_prof");
+         int id_p = consulta.getInt("id_p");
+         String nomeDoProfessor = consulta.getString("nome");
+         String tituloDoProfessor = consulta.getString("titulo");
+         int cargaHoraria = consulta.getInt("carga_horaria");
+         professor = new Professor(nomeDoProfessor, tituloDoProfessor, id_p);
+         professores.add(professor);
+        }
+            
+        for(Professor prof : professores){
+            System.out.println(prof);
+        }
+            
+        } catch (SQLException e) {
+                    e.printStackTrace();
+        }
     }
 
     static void excluirProfessor() {
@@ -193,9 +215,21 @@ public class Menu {
             int idDoProfessor;
             System.out.println("Insira o id do professor a ser excluido: ");
             idDoProfessor = entrada.nextInt();
-           
-           
-        } finally {
+            clearBuffer(entrada);
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+            String sql = "DELETE FROM professor WHERE id_p = ?";
+            PreparedStatement instrucao = connection.prepareStatement(sql);
+            instrucao.setInt(1,idDoProfessor);
+            int linhasAfetadas = instrucao.executeUpdate();
+            if(linhasAfetadas > 0){
+            System.out.println("Professor deletado com sucesso");
+            } else {
+            System.out.println("Não foi possivel deletar o professor");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
             entrada.close();
         }
 
@@ -277,11 +311,7 @@ public class Menu {
             System.out.println("Insira o id do componente a qual quer editar: ");
             idDoComponente = entrada.nextInt();
             componente = new ComponenteCurricular(nomeDoComponente, idDoComponente);
-            if (componentesBTI.contains(idDoComponente)) {
-
-            } else {
-                System.out.println("O componente curricular informado não está na lista dos componentes cadastrados");
-            }
+            
         } catch (NomeDoComponenteInvalido e) {
             e.printStackTrace();
         } finally {
@@ -338,18 +368,6 @@ public class Menu {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'excluirTurma'");
     }
-
-    /* IGNORAR LINHAS ABAIXO */
-
-    // Arraylist de string com os nomes de todos os professores, componentes e ids
-    // dos componentes que possuem atualmente um vinculo a universidade,
-    // inicialmente para facilitar a
-    // Validação de dados, de busca, remoção e edição de dados
-    private static ArrayList<Professor> professores = new ArrayList<>();
-
-    private static ArrayList<ComponenteCurricular> componentesBTI = new ArrayList<>();
-
-    private static ArrayList<Turma> turmas = new ArrayList<>();
 
     private static void clearBuffer(Scanner scanner) {
         if (scanner.hasNextLine()) {
