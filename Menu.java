@@ -26,19 +26,18 @@ public class Menu {
             String tituloDoProfessor; // Atributo onde será armazenado o titulo do professor a ser cadastrado e
                                       // passado para dentro do construtor da classe professor
             System.out.print("Insira o nome do professor a ser cadastrado: ");
-            nomeDoProfessor = entrada.nextLine(); // Recebendo dados do nome
+            nomeDoProfessor = entrada.nextLine().trim(); // Recebendo dados do nome
             System.out.print("Insira o titulo do professor a ser cadastrado: ");
-            tituloDoProfessor = entrada.nextLine(); // Recebendo dados do titulo
+            tituloDoProfessor = entrada.nextLine().trim(); // Recebendo dados do titulo
             System.out.println("Insira o id do professor a ser cadastrado: ");
             id = entrada.nextInt();
-            clearBuffer(entrada);
             // instanciando o objeto da classe professor com os dados passados
             Professor professor = new Professor(nomeDoProfessor, tituloDoProfessor, id);
             // Caso o nome informado esteja dentro da nossa arraylist de string com nome de
             // todos os professor com vinculo atualmente
             // Podemos prosseguir e adicionar o professor e seus respectivos dados para o
             // banco de dados
-            if (!professores.contains(professor)) {
+            if (!professoresCad.contains(professor)) {
                 //Atributo do tipo connection usado para realziar a conexão com nosso banco de dados
                 Connection connection;
                 //String usada para realizar a inserção de dados no banco de dados
@@ -63,11 +62,14 @@ public class Menu {
                     }
                     
                      //Fechando conexão com o banco de dados para que não seja ocupado recurso do banco de dados e adicionando objeto professor a nossa arraylist de professores
-                    professores.add(professor);
+                    professoresCad.add(professor);
                     instrucao.close();
                     connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
+                } finally {
+                    //Fecha o scanner
+                    
                 }
             } else {
                 // Caso o professor o nome do professor não esteja dentro da nossa arraylist,
@@ -79,10 +81,7 @@ public class Menu {
             e.printStackTrace();
         } catch (DadosDoProfessorInvalidoException e) {
             e.printStackTrace();
-        } finally {
-            //Fecha o scanner
-            entrada.close();
-        }
+        } 
     }
 
     // Metodo para editar os dados de um professor
@@ -110,9 +109,9 @@ public class Menu {
                 
                 String tituloDoProfessor;
                 System.out.println("Insira o nome do professor para atualizar o nome do professor selecionado: ");
-                nomeDoProfessor = entrada.nextLine();
+                nomeDoProfessor = entrada.nextLine().trim();
                 System.out.println("Insira o titulo para atualizar o titulo do professor selecionado: ");
-                tituloDoProfessor = entrada.nextLine();
+                tituloDoProfessor = entrada.nextLine().trim();
                 sql = "UPDATE professor SET nome = ?, titulo = ? WHERE id_p = ?";
                 PreparedStatement instrucao;
                 instrucao = connection.prepareStatement(sql);
@@ -146,12 +145,14 @@ public class Menu {
             idDoProfessor = entrada.nextInt();
             clearBuffer(entrada);
                 try {
-                    
+                    //Preparando conxexão com o banco de dados
                     Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
                     String sql = "SELECT id_prof, id_p, nome, titulo, carga_horaria FROM professor WHERE id_p = ?";
                     PreparedStatement instrucao = connection.prepareStatement(sql); 
                     instrucao.setInt(1, idDoProfessor);
+                    //executando consulta
                     ResultSet consulta = instrucao.executeQuery(); 
+                    //Usando laço while para capturar os dados do professor buscado
                     while(consulta.next()){
                     int idKey = consulta.getInt("id_prof");
                     int id_p = consulta.getInt("id_p");
@@ -159,17 +160,27 @@ public class Menu {
                     String tituloDoProfessor = consulta.getString("titulo");
                     int cargaHoraria = consulta.getInt("carga_horaria");
                     professor = new Professor(nomeDoProfessor, tituloDoProfessor, id_p);
-                    String sql2 = "SELECT id_comp, id_prof, nomeComp, id_p";
-                    //Usar o select acima para selecionar os componentes curriculares do professor correspondente para imprimi-los usando objetos
-
-                    /*System.out.println("Nome do professor: "+ nomeDoProfessor);
-                    System.out.println("ID aleatorio do professor: "+id_p);
-                    System.out.println("ID KEY do professor: "+ idKey);
-                    System.out.println("Titulo do professor: "+tituloDoProfessor);
-                    System.out.println("Carga horaria do professor: "+cargaHoraria);*/
-
-                    }
+                    //fechando consulta atual
+                    consulta.close();
                     
+                    }
+                    //preparando nova consulta
+                    sql = "SELECT * FROM componentes WHERE id_prof = ?";
+                    instrucao = connection.prepareStatement(sql);
+                    instrucao.setInt(1, professor.getId());
+                    //executando consulta
+                    consulta = instrucao.executeQuery();
+                    //capturando componentes curriculares do professor
+                    while(consulta.next()){
+                    int cargaHorariaComp = consulta.getInt("carga_horaria");
+                    String nomeComp = consulta.getString("nome");
+                    int idComp = consulta.getInt("id");
+                    professor.adicionaComponenteCurricular(cargaHorariaComp, nomeComp, idComp);
+                        }      
+
+                    consulta.close();
+                    System.out.println(professor);
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                 } catch (DadosDoProfessorInvalidoException e) {
@@ -182,8 +193,9 @@ public class Menu {
         return professor;
     }
 
-    static void listarProfessores() {
-        ArrayList <Professor> professores = new Arraylist<>();
+    static ArrayList<Professor> listarProfessores() {
+        ArrayList <Professor> professores = new ArrayList<>();
+        Professor professor = null;
         try{ 
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
         String sql = "SELECT * FROM professor";
@@ -198,14 +210,16 @@ public class Menu {
          professor = new Professor(nomeDoProfessor, tituloDoProfessor, id_p);
          professores.add(professor);
         }
-            
+        instrucao.close();
+        consulta.close();    
         for(Professor prof : professores){
             System.out.println(prof);
         }
             
-        } catch (SQLException e) {
+        } catch (SQLException | DadosDoProfessorInvalidoException | InputMismatchException e) {
                     e.printStackTrace();
         }
+        return professores;
     }
 
     static void excluirProfessor() {
@@ -213,9 +227,13 @@ public class Menu {
 
         try {
             int idDoProfessor;
-            System.out.println("Insira o id do professor a ser excluido: ");
+            //Inserimos um id do professor a ser excluido do sistema
+            System.out.println("Lista de professores:");
+            listarProfessores();
+            System.out.println("\nInsira o id do professor a ser excluido: ");
             idDoProfessor = entrada.nextInt();
             clearBuffer(entrada);
+            //realizando conexão com o banco de dados
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
             String sql = "DELETE FROM professor WHERE id_p = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
@@ -226,6 +244,7 @@ public class Menu {
             } else {
             System.out.println("Não foi possivel deletar o professor");
             }
+            instrucao.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -235,35 +254,38 @@ public class Menu {
 
     }
 
-    static void cadastrarComponenteCurricular() throws InputMismatchException {
+    static ComponenteCurricular cadastrarComponenteCurricular() throws InputMismatchException {
+        ComponenteCurricular componenteASerAdicionado = null;
         String r = "S";
         Scanner entrada = new Scanner(System.in);
         while (r.equals("S") || r.equals("s") || r.equals("sim")) {
             try {
                 // Variaveis que armazenam os dados do componente curricular a ser cadastrado
-                String nomeDoComponenteCurricular;
+                clearBuffer(entrada);
+                String nomeDoComponenteCurricular = "";
                 int idComponente;
                 int cargaHorariaComponente = 0;
+                int id_prof;
                 System.out.println("Insira os dados do componente curricular a ser cadastrado: ");
                 System.out.print("\nNome do componente curricular: ");
-                nomeDoComponenteCurricular = entrada.nextLine();
+                nomeDoComponenteCurricular = entrada.nextLine().trim();
+                
                 System.out.print("\nID do componente curricular: ");
                 idComponente = entrada.nextInt();
                 System.out.print("\nCarga horaria do componente curricular: ");
                 cargaHorariaComponente = entrada.nextInt();
-              
+                System.out.println("Id do professor para cadastrar a discplina: ");
+                id_prof = entrada.nextInt();
+                clearBuffer(entrada);
                 //Caso seja inserido algum caractere que não seja alfanumerico, lançamos uma exceção, pois o campo cargahoraria deve ser do tipo inteiro
                 if (Character.isLetter((char) cargaHorariaComponente)) {
                         throw new InputMismatchException(
                                 "Você digitou uma letra, mas deveria ser um caractere alfanumérico!");
                 }
-                //Após ler um dado nextInt() e tentar ler uma string em seguida estava tendo problemas de linhas serem executadas antes do que deveriam, então usei um limpador de buffer para 
-                //resolver a situação 
-                clearBuffer(entrada);
+                
                 // instanciando um objeto da classe componente a qual armazena os dados que
                 // serão enviados para o banco de dados
-                ComponenteCurricular componenteASerAdicionado = new ComponenteCurricular(cargaHorariaComponente,
-                        nomeDoComponenteCurricular, idComponente);
+                componenteASerAdicionado = new ComponenteCurricular(cargaHorariaComponente,nomeDoComponenteCurricular, idComponente);
                 System.out.println("Componente curricular a ser adicionado: ");
                 // Informando os dados do componente curricular a ser adicionado antes de
                 // envia-lo para o BD, afim de que o usuario verifique se os dados estão
@@ -271,22 +293,33 @@ public class Menu {
                 System.out.println(componenteASerAdicionado + "\n");
                 r = "";
                 System.out.println("Deseja adiconar este componente curricular? S/N :");
-                r = entrada.nextLine();
+                r = entrada.nextLine().trim();
 
                 // Caso o usuario realmente deseje inserir no BD o componente entramos neste
                 // laço if
                 if (r.equals("S") || r.equals("s") || r.equals("sim")) {
                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
-                   String sql = "INSERT INTO Componentes (inserir aqui colunas da tabela de componentes) VALUES (?,?,?,?)";
+                   String sql = "INSERT INTO Componentes (id_prof, nomecomp, id_p, carga_horaria) VALUES (?,?,?,?)";
                    PreparedStatement instrucao = connection.prepareStatement(sql);
+                   instrucao.setInt(1,id_prof);
+                   instrucao.setString(2,componenteASerAdicionado.getNome());
+                   instrucao.setInt(3,componenteASerAdicionado.getID());
+                   instrucao.setInt(4,componenteASerAdicionado.getCargaHoraria());
+                   int linhasAfetadas = instrucao.executeUpdate();
+                   if(linhasAfetadas > 0){
+                    System.out.println("Inserido com sucesso");
+                   } else{
+                    System.out.println("Inserção falhou");
+                   }
+                   instrucao.close();
                 }
-
+            
                 // Logo depois perguntamos se o mesmo deseja inserir mais algum componente, se
                 // sim continuamos com as inserções, caso não retornamos ao menu de ops
                 System.out.println("Deseja adicionar mais algum componente curricular?");
                 System.out.println("S/N ?");
-                r = entrada.nextLine();
-            } catch (InputMismatchException | ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido e) {
+                r = entrada.nextLine().trim();
+            } catch (InputMismatchException | ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido | SQLException e) {
                 e.printStackTrace();
             }
             // Verificar a resposta do usuario, caso ele responda com qualquer resposta
@@ -296,38 +329,131 @@ public class Menu {
             // Usado na main
 
         } 
-        
         entrada.close();
-
+        return componenteASerAdicionado;
+        
     }
 
-    static void editarComponenteCurricular() {
+    static ComponenteCurricular editarComponenteCurricular() {
         Scanner entrada = new Scanner(System.in);
         ComponenteCurricular componente = null;
         try {
-            String nomeDoComponente;
+
             int idDoComponente;
-            System.out.println("Insira o nome do componente a qual quer editar: ");
-            nomeDoComponente = entrada.nextLine();
             System.out.println("Insira o id do componente a qual quer editar: ");
             idDoComponente = entrada.nextInt();
-            componente = new ComponenteCurricular(nomeDoComponente, idDoComponente);
+            //Aqui chamamos um metodo para que possamos guardar dados atuais do banco de dados e não perde-los caso o usuario não deseje alterar algum dos dados
+            componente = verComponenteCurricular(idDoComponente);
+            clearBuffer(entrada);
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+            int idProfessor;
+            //Abaixo temos alguns ifs que servem para que o usuario possa decidir ou não inserir valores novos para o componente curricular
+            //Caso deseje manter algum dos dados atuais, então ele deve apenas pressionar enter e o dado atual irá se manter
+            System.out.println("Se deseja alterar o id do professor a qual a disciplina está vinculada digite um id, se deseja manter valor atual digite enter");
+            idProfessor = entrada.nextInt();
+            clearBuffer(entrada);
+            if(idProfessor == 0){
+                idProfessor = componente.getId_prof();
+            } 
+            System.out.println("Se deseja alterar o nome do componente digite um nome, se deseja manter valor atual digite enter");
+            String nomeComp = entrada.nextLine().trim();
+            if(nomeComp.isEmpty()){
+                nomeComp = componente.getNome();
+            }
+            System.out.println("Se deseja alterar o id do componente digite um id, se deseja manter valor atual digite enter");
+            int id_p = entrada.nextInt();
+            if(id_p == 0){
+                id_p = componente.getID();
+            }
+            System.out.println("Se deseja alterar a carga horaria do componente digite um novo valor, se deseja manter valor atual digite enter");
+            System.out.println("Inserir valor de 30 ou 60");
+            int carga_horaria = entrada.nextInt();
+            clearBuffer(entrada);
+            if(carga_horaria == 0){
+                carga_horaria = componente.getCargaHoraria();
+            }
+            String sql = "UPDATE componentes SET id_prof = ?, nomecomp = ?, id_p = ?, carga_horaria = ? WHERE id_p = ?";
+            PreparedStatement instrucao;
+            //Atualizamos os dados, sendo ou não alterados, em caso de nçao alteração mantém-se dados atuais que foram armazenados anteriormente no inicio deste metodo
+            instrucao = connection.prepareStatement(sql);
+            instrucao.setInt(1, idProfessor);
+            instrucao.setString(2, nomeComp);
+            instrucao.setInt(3, id_p);
+            instrucao.setInt(4, carga_horaria);
+            instrucao.setInt(5, idDoComponente);
+            int linhasAfetadas = instrucao.executeUpdate();
+            if(linhasAfetadas > 0){
+                System.out.println("Sistema atualizado com sucesso");
+            } else {
+                System.out.println("Atualização do sistema falhou");
+            }
+            instrucao.close();
             
-        } catch (NomeDoComponenteInvalido e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             entrada.close();
         }
+        return componente;
     }
 
-    static void verComponenteCurricular() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'verComponenteCurricular'");
+    static ComponenteCurricular verComponenteCurricular(int idComp) {
+        Scanner entrada = new Scanner(System.in);
+        ComponenteCurricular componente = null;
+        if(idComp == 0){
+            System.out.println("Insira o id do componente a ser editado");
+            idComp = entrada.nextInt();
+        }
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+            String sql = "SELECT id_prof, nomecomp, id_p, carga_horaria FROM componentes WHERE id_p = ?";
+            PreparedStatement instrucao = connection.prepareStatement(sql);
+            instrucao.setInt(1, idComp);
+            ResultSet consulta = instrucao.executeQuery();
+            int id_prof = consulta.getInt("id_prof");
+            String nome = consulta.getString("nomecomp");
+            int id_p = consulta.getInt("id_p");
+            int carga_horaria = consulta.getInt("carga_horaria");
+            componente = new ComponenteCurricular(carga_horaria, nome, id_p);
+            componente.setId_prof(id_prof);
+            instrucao.close();
+            consulta.close();
+            entrada.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return componente;
     }
 
-    static void listarComponentesCurriculares() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listarComponentesCurriculares'");
+    static ArrayList<ComponenteCurricular> listarComponentesCurriculares() {
+        ArrayList <ComponenteCurricular> componentes = new ArrayList<>();
+        ComponenteCurricular componente = null;
+        try{ 
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+        String sql = "SELECT * FROM componentes";
+        PreparedStatement instrucao = connection.prepareStatement(sql);
+        ResultSet consulta = instrucao.executeQuery();
+        while(consulta.next()){
+         int idKey = consulta.getInt("id_comp");
+         int id_prof = consulta.getInt("id_prof");
+         String nomeComp = consulta.getString("nomecomp");
+         int id_p = consulta.getInt("id_p");
+         int cargaHoraria = consulta.getInt("carga_horaria");
+         componente = new ComponenteCurricular(cargaHoraria, nomeComp, id_p);
+         componentes.add(componente);
+        }
+        instrucao.close();
+        consulta.close();    
+        for(ComponenteCurricular comp: componentes){
+            System.out.println(comp);
+        }
+            
+        } catch (SQLException | InputMismatchException | ValoresInvalidosPCargaHoraria | NomeDoComponenteInvalido e) {
+                    e.printStackTrace();
+        }
+        return componentes;
     }
 
     static void excluirComponenteCurricular() {
@@ -369,6 +495,12 @@ public class Menu {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'excluirTurma'");
     }
+
+    private static ArrayList<Professor> professoresCad = new ArrayList<>();
+
+    private static ArrayList<ComponenteCurricular> componentesBTI = new ArrayList<>();
+
+    private static ArrayList<Turma> turmas = new ArrayList<>();
 
     private static void clearBuffer(Scanner scanner) {
         if (scanner.hasNextLine()) {
