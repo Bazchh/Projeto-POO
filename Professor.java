@@ -7,6 +7,7 @@ import Exceções.ValoresInvalidosPCargaHoraria;
 import Exceções.DadosDoProfessorInvalidoException;
 public class Professor {
     private int id;
+    private int idKey;
     private String titulo;
     private String nome; // Variavel que armazena o nome do professor
     private int cargaHoraria; // Variavel utilizada para somar a carga horaria total do professor e verificar se é válida com base no critério estabelecido
@@ -22,11 +23,7 @@ public class Professor {
         if(nome.isEmpty()){
             throw new DadosDoProfessorInvalidoException("Nome do professor não deve estar vazio");
         }
-
-        if (Character.isLetter((char) id)) {
-            throw new InputMismatchException(
-                    "Você digitou uma letra, mas deveria ser um caractere alfanumérico!");
-        }
+        
         this.id = id;
         this.nome = nome;
         this.titulo = titulo;
@@ -113,7 +110,7 @@ public class Professor {
 
     //Metodo para adicionar uma turma ao componente curricular do professor
     //O usuario deve inserir a qual componente do professor ele quer adicionar uma turma, assim o professor irá ficar cadastrado na turma como o professor da mesma
-    public void adicionarTurmaAoComponenteDoProfessor(String nome, int id){
+    public void adicionarTurmaAoComponenteDoProfessor(String nome, int id, String semestre){
         //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
         ComponenteCurricular componente = null;
         try {
@@ -127,7 +124,7 @@ public class Professor {
             if(this.componentes.contains(componente)){       
             //Caso sim, entramos na condição e procuramos a posição onde está o componente curricular a qual se quer adiconar uma turma
             int i = this.componentes.indexOf(componente);
-            this.componentes.get(i).addTurmaParaOComponente();
+            this.componentes.get(i).addTurmaParaOComponente(semestre);
         } else {
             System.out.println("O professor não possui o componente curricular buscado");
              }
@@ -155,12 +152,20 @@ public class Professor {
         return cargaHoraria;
     }
 
+    public int getIdKey(){
+        return idKey;
+    }
+
     public String getTitulo(){
         return titulo;
     }
 
     public void setTitulo(String titulo){
         this.titulo = titulo;
+    }
+
+    public void setIdKey(int idKey){
+        this.idKey = idKey;
     }
 
     public void setCargaHoraria(int cargaHoraria) {
@@ -206,7 +211,7 @@ public class Professor {
             str += "\n" + componentes.get(i).toString();
         }
 
-        return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.id + "\nCarga Horaria: " + cargaHoraria
+        return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.id + "\nID banco no de dados: "+ this.idKey +"\nCarga Horaria: " + cargaHoraria
                 + "\nComponentes curriculares: " + str;
     }
 
