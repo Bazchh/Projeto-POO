@@ -304,7 +304,7 @@ public class Menu {
                 // laço if
                 if (r.equals("S") || r.equals("s") || r.equals("sim")) {
                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
-                   String sql = "INSERT INTO componentes (id_prof,nomecomp,id_p,carga_horaria) VALUES (?,?,?,?);";
+                   String sql = "INSERT INTO componentes (id_prof,nomecomp,id_p,carga_horaria) VALUES (?,?,?,?)";
                    PreparedStatement instrucao = connection.prepareStatement(sql);
                    professor = verDadosDoProfessor(id_prof);
                     //Antes de fazre atualizações e inserções verificamos se o professor selecionado não está com sua carga horaria maxima
@@ -450,16 +450,18 @@ public class Menu {
         }
         try {
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
-            String sql = "SELECT id_comp, nomecomp, id_p, carga_horaria FROM componentes WHERE id_p = ?";
+            String sql = "SELECT id_comp, id_prof, nomecomp, id_p, carga_horaria FROM componentes WHERE id_p = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             instrucao.setInt(1, idComp);
             ResultSet consulta = instrucao.executeQuery();
             while(consulta.next()){
+            int idProf = consulta.getInt("id_prof");
             int idKey = consulta.getInt("id_comp");
             String nome = consulta.getString("nomecomp");
             int id_p = consulta.getInt("id_p");
             int carga_horaria = consulta.getInt("carga_horaria");
             componente = new ComponenteCurricular(carga_horaria, nome, id_p);
+            componente.setIdProf(idProf);
             componente.setID(id_p);
             componente.setIdKey(idKey);
             System.out.println(componente);
@@ -536,6 +538,7 @@ public class Menu {
         ComponenteCurricular c = null;
         Scanner entrada = new Scanner(System.in);
         try{
+         listarComponentesCurriculares();
         System.out.println("\nInsira o id do componente curricular a qual quer adicionar uma turma: ");
         int idComp = entrada.nextInt();
         c = verComponenteCurricular(idComp);
@@ -546,9 +549,9 @@ public class Menu {
         System.out.println("Insira o id da turma: ");
         int id_t = entrada.nextInt();
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
-        String sql = "insert into turma (id_comp, id_prof, nome_turma, id_t, semestre) VALUES (?,?,?,?,?)";
+        String sql = "insert into turma (id_p, id_prof, nome_turma, id_t, semestre) VALUES (?,?,?,?,?)";
         PreparedStatement instrucao = connection.prepareStatement(sql);
-        instrucao.setInt(1,idComp);
+        instrucao.setInt(1,c.getIdKey());
         instrucao.setInt(2, c.getIdProf());
         instrucao.setString(3, c.getNome());
         instrucao.setInt(4, id_t);
@@ -559,7 +562,22 @@ public class Menu {
         } else{
             System.out.println("Adição de turma falhou");
              }
-        
+        int contagemProfs = 0;
+        sql = "SELECT id_prof FROM turma WHERE id_t = ?";
+        instrucao = connection.prepareStatement(sql);
+        instrucao.setInt(1,id_t);
+        ResultSet consulta = instrucao.executeQuery();
+        ArrayList <Integer> ids = new ArrayList<>();
+        while(consulta.next()){
+            int id_prof = consulta.getInt("id_prof");
+            ids.add(id_prof);
+            System.out.println("ID do professor: " + id_prof);
+            contagemProfs++;
+        }
+
+        if(contagemProfs > 1){
+
+        }
 
         } catch (SQLException e) {
             e.printStackTrace();
