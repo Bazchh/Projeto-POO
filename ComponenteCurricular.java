@@ -8,6 +8,7 @@ public class ComponenteCurricular {
     private String nome;
     // Id para criar um componente curricular
     private int ID;
+    private int idKey;
     // Id para buscar, comparar ou remover um componente curricular
     private LinkedList<Turma> turmaDaDisciplina = new LinkedList<>();
 
@@ -40,8 +41,8 @@ public class ComponenteCurricular {
         this.ID = idBusca;
     }
 
-    public void addTurmaParaOComponente() {
-        Turma novaTurma = new Turma(this.nome + " T nº" + (this.turmaDaDisciplina.size()+1));
+    public void addTurmaParaOComponente(String semestre) {
+        Turma novaTurma = new Turma(this.nome + " T nº" + (this.turmaDaDisciplina.size()+1), semestre);
         this.turmaDaDisciplina.add(novaTurma);
 
     }
@@ -54,6 +55,14 @@ public class ComponenteCurricular {
 
     public int getCargaHoraria() {
         return cargaHoraria;
+    }
+
+    public int getIdKey(){
+        return idKey;
+    }
+
+    public void setIdKey(int idKey){
+        this.idKey = idKey;
     }
 
     public void setCargaHoraria(int cargaHoraria) {
@@ -110,7 +119,7 @@ public class ComponenteCurricular {
 
     @Override
     public String toString() {
-        return "Carga horaria: " + cargaHoraria + " nome do componente: " + nome + " ID: " + ID + " Turmas: " + (getTurmaDaDisciplinaSize()+1);
+        return  "Nome do componente: " + nome +  " ID: " + ID + " ID do banco de dados: " + idKey +  " Carga horaria: " + cargaHoraria;
     }
 
 }
