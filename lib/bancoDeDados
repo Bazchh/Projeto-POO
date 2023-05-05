@@ -9,16 +9,27 @@ create table componentes
 		(id_comp serial,
 		 id_prof int,
 	     nomeComp varchar(30),
-		 id_p varchar(8),		 
+		 id_p int,		 
 		 carga_horaria int,
 		primary key(id_comp),
 		foreign key (id_prof) references professor);
 create table turma
 		(id_turma serial,
-		 id_comp int,
+		 id_p int,
 		 id_prof int,
 		 nome_turma varchar(30),
-		id_t varchar(10),
+	     id_t int,
+		 semestre int,
 		primary key (id_turma),
-		foreign key (id_comp) references componentes,
+		foreign key (id_p) references componentes,
 		foreign key (id_prof) references professor);
+create table horarios
+	(id_hrs serial,
+	 id_t int,
+	 seg varchar (7),
+	 ter varchar (7),
+     qua varchar (7),
+	 qui varchar (7),
+	 sex varchar (7),
+	 primary key (id_hrs),
+	 foreign key (id_t) references turma);
