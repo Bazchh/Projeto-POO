@@ -110,7 +110,7 @@ public class Professor {
 
     //Metodo para adicionar uma turma ao componente curricular do professor
     //O usuario deve inserir a qual componente do professor ele quer adicionar uma turma, assim o professor irá ficar cadastrado na turma como o professor da mesma
-    public void adicionarTurmaAoComponenteDoProfessor(String nome, int id, String semestre){
+    public void adicionarTurmaAoComponenteDoProfessor(String nome, int id, int semestre){
         //Primeiro o usuario passará parametros para escolher a qual disciplina ele quer adicionar uma turma
         ComponenteCurricular componente = null;
         try {
@@ -212,7 +212,7 @@ public class Professor {
         }
 
         return "\nNome do professor: " + nome + "\nTitulo do professor: " + this.titulo + "\nID do professor: " + this.id + "\nID banco no de dados: "+ this.idKey +"\nCarga Horaria: " + cargaHoraria
-                + "\nComponentes curriculares: " + str;
+                + "\n\nComponentes curriculares: " + str;
     }
 
 }
