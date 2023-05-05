@@ -7,6 +7,7 @@ public class ComponenteCurricular {
     private int cargaHoraria;
     private String nome;
     // Id para criar um componente curricular
+    private int idProfessor;
     private int ID;
     private int idKey;
     // Id para buscar, comparar ou remover um componente curricular
@@ -41,7 +42,7 @@ public class ComponenteCurricular {
         this.ID = idBusca;
     }
 
-    public void addTurmaParaOComponente(String semestre) {
+    public void addTurmaParaOComponente(int semestre) {
         Turma novaTurma = new Turma(this.nome + " T nº" + (this.turmaDaDisciplina.size()+1), semestre);
         this.turmaDaDisciplina.add(novaTurma);
 
@@ -57,12 +58,20 @@ public class ComponenteCurricular {
         return cargaHoraria;
     }
 
+    public int getIdProf(){
+        return idProfessor;
+    }
+
     public int getIdKey(){
         return idKey;
     }
 
     public void setIdKey(int idKey){
         this.idKey = idKey;
+    }
+
+    public void setIdProf(int idProfessor){
+        this.idProfessor = idProfessor;
     }
 
     public void setCargaHoraria(int cargaHoraria) {
