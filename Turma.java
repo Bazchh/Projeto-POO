@@ -1,44 +1,77 @@
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Random;
 
 public class Turma {
     // Utilizando classe calendario para obter o ano atual do sistema e adiciona-lo
     // ao id da turma
-    private Calendar cal = GregorianCalendar.getInstance();
-    // Adicionando o ano atual do calendario + 6 numeros gerados aleatoriamente
-    private final String iD = "" + cal.get(Calendar.YEAR) + geradorAleatorio();
-    private String nomeDaTurma;
-    private String semestre;
 
-    public Turma(String nomeDaTurma, String semestre) {
+    // Adicionando o ano atual do calendario + 6 numeros gerados aleatoriamente
+    private int idKey;
+    private int id;
+    private int idComp;
+    private int idProf;
+    private String nomeDaTurma;
+    private int semestre;
+
+    public Turma(String nomeDaTurma, int semestre) {
         this.nomeDaTurma = nomeDaTurma;
         this.semestre = semestre;
     }
 
     //Getters and setters
-    public String getiD() {
-        return this.iD;
-    }
-
-    public String getSemestre(){
-        return this.semestre;
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        return result;
     }
     
+    public int getIdKey() {
+        return idKey;
+    }
+
+    public void setIdKey(int idKey) {
+        this.idKey = idKey;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdComp() {
+        return idComp;
+    }
+
+    public void setIdComp(int idComp) {
+        this.idComp = idComp;
+    }
+
+    public int getIdProf() {
+        return idProf;
+    }
+
+    public void setIdProf(int idProf) {
+        this.idProf = idProf;
+    }
+
     public String getNomeDaTurma() {
-        return this.nomeDaTurma;
+        return nomeDaTurma;
     }
 
     public void setNomeDaTurma(String nomeDaTurma) {
         this.nomeDaTurma = nomeDaTurma;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((iD == null) ? 0 : iD.hashCode());
-        return result;
+    public int getSemestre() {
+        return semestre;
+    }
+
+    public void setSemestre(int semestre) {
+        this.semestre = semestre;
     }
 
     @Override
@@ -50,23 +83,13 @@ public class Turma {
         if (getClass() != obj.getClass())
             return false;
         Turma other = (Turma) obj;
-        if (iD == null) {
-            if (other.iD != null)
-                return false;
-        } else if (!iD.equals(other.iD))
+        if (id != other.id)
             return false;
         return true;
     }
-    
+
     public String toString(){
         return this.nomeDaTurma;
-    }
-
-    private static String geradorAleatorio() {
-        Random random = new Random();
-        int n = random.nextInt(600000);
-        String str = Integer.toString(n);
-        return str;
     }
 
 }
