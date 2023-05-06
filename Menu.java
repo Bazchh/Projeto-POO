@@ -92,7 +92,7 @@ public class Menu {
         System.out.println("Insira o id do professor a ser editado: ");
         idDoProfessor = entrada.nextInt();
         clearBuffer(entrada);
-        Professor professor = verDadosDoProfessor(idDoProfessor);
+        Professor professor = getDadosDoProfessor(idDoProfessor);
         try {   
             String nomeDoProfessor;                    
                 try {
@@ -134,14 +134,14 @@ public class Menu {
         }
     }
 
-    static Professor verDadosDoProfessor(int idProfessor) {
+    static Professor verDadosDoProfessor() {
         Scanner entrada = new Scanner(System.in);   
         Professor professor = null;
-        if(idProfessor == 0){
+ 
             System.out.println("Insira o id do professor para ver seus dados: ");
-            idProfessor = entrada.nextInt();
+            int idProfessor = entrada.nextInt();
             clearBuffer(entrada);
-        }
+        
         try {           
             
                 try {
@@ -188,6 +188,58 @@ public class Menu {
         }
         return professor;
     }
+
+    static Professor getDadosDoProfessor(int idProfessor) {
+        Scanner entrada = new Scanner(System.in);   
+        Professor professor = null;
+
+        try {           
+            
+                try {
+                    //Preparando conxexão com o banco de dados
+                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+                    String sql = "SELECT id_prof, id_p, nome, titulo FROM professor WHERE id_p = ?";
+                    PreparedStatement instrucao = connection.prepareStatement(sql); 
+                    instrucao.setInt(1, idProfessor);
+                    //executando consulta
+                    ResultSet consulta = instrucao.executeQuery();
+                    //Usando laço while para capturar os dados do professor buscado
+                    while(consulta.next()){
+                    int idKey = consulta.getInt("id_prof");
+                    int id_p = consulta.getInt("id_p");
+                    String nomeDoProfessor = consulta.getString("nome");
+                    String tituloDoProfessor = consulta.getString("titulo");
+                    professor = new Professor(nomeDoProfessor, tituloDoProfessor, id_p);
+                    professor.setIdKey(idKey);
+                    }
+                    //preparando nova consulta
+                    sql = "SELECT id_p, nomecomp, carga_horaria FROM componentes WHERE id_prof = ?";
+                    PreparedStatement instrucao2 = connection.prepareStatement(sql);
+                    instrucao2.setInt(1, professor.getIdKey());
+                    //executando consulta
+                    consulta = instrucao2.executeQuery();
+                    //capturando componentes curriculares do professor
+                    while(consulta.next()){
+                    int idComp = consulta.getInt("id_p");
+                    String nomeComp = consulta.getString("nomecomp");
+                    int cargaHorariaComp = consulta.getInt("carga_horaria");
+                    professor.adicionaComponenteCurricular(cargaHorariaComp, nomeComp, idComp);
+                        }      
+
+                    System.out.println(professor);
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (DadosDoProfessorInvalidoException e) {
+                    e.printStackTrace();
+                }
+            
+        } finally {
+            System.out.println("\nFinalizando função verDadosProfessor");
+        }
+        return professor;
+    }
+
     //Metodo para listar todos os professores presentes no banco de dados
     static ArrayList<Professor> listarProfessores() {
         ArrayList <Professor> professores = new ArrayList<>();
@@ -230,7 +282,7 @@ public class Menu {
             listarProfessores();
             System.out.println("\nInsira o id do professor a ser excluido: ");
             idDoProfessor = entrada.nextInt();
-            professor = verDadosDoProfessor(idDoProfessor);
+            professor = getDadosDoProfessor(idDoProfessor);
             clearBuffer(entrada);
             //realizando conexão com o banco de dados
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
@@ -306,7 +358,7 @@ public class Menu {
                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
                    String sql = "INSERT INTO componentes (id_prof,nomecomp,id_p,carga_horaria) VALUES (?,?,?,?)";
                    PreparedStatement instrucao = connection.prepareStatement(sql);
-                   professor = verDadosDoProfessor(id_prof);
+                   professor = getDadosDoProfessor(id_prof);
                     //Antes de fazre atualizações e inserções verificamos se o professor selecionado não está com sua carga horaria maxima
                    if(professor.getCargaHoraria() < 300 && profs.contains(professor)){
                    id_prof = professor.getIdKey();
@@ -383,7 +435,7 @@ public class Menu {
         try {
 
             int idDoComponente;
-            System.out.println("Insira o id do componente a qual quer editar: ");
+            System.out.println("\nInsira o id do componente a qual quer editar: ");
             idDoComponente = entrada.nextInt();
             //Aqui chamamos um metodo para que possamos guardar dados atuais do banco de dados e não perde-los caso o usuario não deseje alterar algum dos dados
             componente = verComponenteCurricular(idDoComponente);
@@ -392,24 +444,24 @@ public class Menu {
             int idProfessor;
             //Abaixo temos alguns ifs que servem para que o usuario possa decidir ou não inserir valores novos para o componente curricular
             //Caso deseje manter algum dos dados atuais, então ele deve apenas pressionar enter e o dado atual irá se manter
-            System.out.println("Se deseja alterar o id do professor a qual a disciplina está vinculada digite um id, se deseja manter valor atual digite enter");
+            System.out.println("\nSe deseja alterar o id do professor a qual a disciplina está vinculada digite um id, se deseja manter valor atual digite enter");
             idProfessor = entrada.nextInt();
             clearBuffer(entrada);
             if(idProfessor == 0){
                 idProfessor = componente.getID();
             } 
-            System.out.println("Se deseja alterar o nome do componente digite um nome, se deseja manter valor atual digite enter");
+            System.out.println("\nSe deseja alterar o nome do componente digite um nome, se deseja manter valor atual digite enter");
             String nomeComp = entrada.nextLine().trim();
             if(nomeComp.isEmpty()){
                 nomeComp = componente.getNome();
             }
-            System.out.println("Se deseja alterar o id do componente digite um id, se deseja manter valor atual digite enter");
+            System.out.println("\nSe deseja alterar o id do componente digite um id, se deseja manter valor atual digite enter");
             int id_p = entrada.nextInt();
             if(id_p == 0){
                 id_p = componente.getID();
             }
-            System.out.println("Se deseja alterar a carga horaria do componente digite um novo valor, se deseja manter valor atual digite enter");
-            System.out.println("Inserir valor de 30 ou 60");
+            System.out.println("\nSe deseja alterar a carga horaria do componente digite um novo valor, se deseja manter valor atual digite enter");
+            System.out.println("\nInserir valor de 30 ou 60");
             int carga_horaria = entrada.nextInt();
             clearBuffer(entrada);
             if(carga_horaria == 0){
@@ -424,13 +476,7 @@ public class Menu {
             instrucao.setInt(3, id_p);
             instrucao.setInt(4, carga_horaria);
             instrucao.setInt(5, idDoComponente);
-            int linhasAfetadas = instrucao.executeUpdate();
-            if(linhasAfetadas > 0){
-                System.out.println("Sistema atualizado com sucesso");
-            } else {
-                System.out.println("Atualização do sistema falhou");
-            }
-            
+            instrucao.executeUpdate();
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -445,7 +491,7 @@ public class Menu {
         ComponenteCurricular componente = null;
         //Usa-se esta condição em caso de chamar este metodo dentro de outro metodo que necessite usa-lo
         if(idComp == 0){
-            System.out.println("Insira o id do componente: ");
+            System.out.println("\nInsira o id do componente: ");
             idComp = entrada.nextInt();
         }
         try {
@@ -519,7 +565,7 @@ public class Menu {
         componente = verComponenteCurricular(idComp);
         clearBuffer(entrada);
         //Neste objeto que obtivemos, temos também o id do professor a qual ela está vinculada
-        professor = verDadosDoProfessor(componente.getIdProf());
+        professor = getDadosDoProfessor(componente.getIdProf());
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
         String sql = "UPDATE professor SET carga_horaria = ? WHERE id_prof = ?";
         professor.removerComponenteCurricular(componente.getNome(), idComp);
@@ -543,10 +589,10 @@ public class Menu {
         int idComp = entrada.nextInt();
         c = verComponenteCurricular(idComp);
         turma = new Turma(c.getNome(), idComp);
-        System.out.println("Insira o semestre a qual a turma está vinculada (1 ou 2): ");
+        System.out.println("\nInsira o semestre a qual a turma está vinculada (1 ou 2): ");
         int semestre = entrada.nextInt();
         turma.setSemestre(semestre);
-        System.out.println("Insira o id da turma: ");
+        System.out.println("\nInsira o id da turma: ");
         int id_t = entrada.nextInt();
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
         String sql = "insert into turma (id_p, id_prof, nome_turma, id_t, semestre) VALUES (?,?,?,?,?)";
@@ -558,9 +604,9 @@ public class Menu {
         instrucao.setInt(5, semestre);
         int linhasAfetadas = instrucao.executeUpdate();
         if(linhasAfetadas > 0){
-            System.out.println("Adição de turma foi um sucesso");
+            System.out.println("\nAdição de turma foi um sucesso");
         } else{
-            System.out.println("Adição de turma falhou");
+            System.out.println("\nAdição de turma falhou");
              }
         int contagemProfs = 0;
         sql = "SELECT id_prof FROM turma WHERE id_t = ?";
@@ -571,7 +617,7 @@ public class Menu {
         while(consulta.next()){
             int id_prof = consulta.getInt("id_prof");
             ids.add(id_prof);
-            System.out.println("ID do professor: " + id_prof);
+            System.out.println("\nID do professor: " + id_prof);
             contagemProfs++;
         }
 
