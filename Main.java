@@ -5,7 +5,8 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) {
 
-       Menu.cadastrarTurma();
+       
+      Menu.cadastrarComponenteCurricular();
 
         Connection connection = null;
         try {
