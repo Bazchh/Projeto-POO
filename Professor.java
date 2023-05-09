@@ -58,16 +58,16 @@ public class Professor {
                 // Quando adicionamos um componente, verificamos também sua carga horaria e
                 // somamos a carga horaria total do professor
                 this.cargaHoraria += componente.getCargaHoraria();
-                System.out.println("\nComponente curricular adicionado com sucesso");
+               // System.out.println("\nComponente curricular adicionado com sucesso");
             } else {
                 // Caso a condição anterior não seja satisfeita informamos que o professor já
                 // atingiu a carga horaria limite
-                System.out.println("\nO professor já atingiu o limite de horas por componentes curriculares");
-                System.out.println(
-                        "\nNão é possivel adicionar mais " + componente.getCargaHoraria() + " horas na carga horaria");
+                //System.out.println("\nO professor já atingiu o limite de horas por componentes curriculares");
+                //System.out.println(
+                 //       "\nNão é possivel adicionar mais " + componente.getCargaHoraria() + " horas na carga horaria");
             }
         } else {
-            System.out.println("\nO professor já possui o componente curricular informado e/ou os dados inseridos são invalidos");
+           // System.out.println("\nO professor já possui o componente curricular informado e/ou os dados inseridos são invalidos");
         }
 
     }
@@ -84,7 +84,7 @@ public class Professor {
         // componentes curriculares em sua grade, logo, podemos verificar se ele possui
         // o componente que buscamos remover
         if (this.componentes.isEmpty()) {
-            System.out.println("\nA lista de componentes curriculares do professor está vazia");
+           // System.out.println("\nA lista de componentes curriculares do professor está vazia");
         } else if (this.cargaHoraria > 0) {
             if (this.componentes.contains(componente)) { // verificando se o professor possui o componente curricular
                                                          // que deseja remover
@@ -97,14 +97,14 @@ public class Professor {
                 }
                 // Removendo componente curricular
                 this.componentes.remove(componente);
-                System.out.println("\nComponente curricular removido com sucesso");
+             //   System.out.println("\nComponente curricular removido com sucesso");
             } else {
-                System.out.println("\nEste professor não possui o componente curricular informado");
+               // System.out.println("\nEste professor não possui o componente curricular informado");
             }
 
         } else {
-            System.out.println(
-                    "\nNão é possivel remover o componente curricular pois o professor não possui nenhum em sua grade e/ou dados inseridos são invalidos");
+            //System.out.println(
+                 //   "\nNão é possivel remover o componente curricular pois o professor não possui nenhum em sua grade e/ou dados inseridos são invalidos");
         }
     }
 
@@ -126,12 +126,12 @@ public class Professor {
             int i = this.componentes.indexOf(componente);
             this.componentes.get(i).addTurmaParaOComponente(semestre);
         } else {
-            System.out.println("O professor não possui o componente curricular buscado");
+          //  System.out.println("O professor não possui o componente curricular buscado");
              }
         } else if(componente != null){
-            System.out.println("Componente está com valor NULL");
+            //System.out.println("Componente está com valor NULL");
         } else  {
-            System.out.println("O professor não possui componentes curriculares em sua grade e/ou dados inseridos são invalidos");
+            //System.out.println("O professor não possui componentes curriculares em sua grade e/ou dados inseridos são invalidos");
         }
     }
     
