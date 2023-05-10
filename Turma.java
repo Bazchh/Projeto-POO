@@ -89,7 +89,7 @@ public class Turma {
     }
 
     public String toString(){
-        return this.nomeDaTurma;
+        return "\nNome da turma: "+this.nomeDaTurma+"\nID da turma: "+this.id+"\nSemestre: "+this.semestre;
     }
 
 }
