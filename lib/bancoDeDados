@@ -18,18 +18,11 @@ create table turma
 		 id_p int,
 		 id_prof int,
 		 nome_turma varchar(30),
-	     id_t int,
+	     	 id_t int,
 		 semestre int,
+		 h1 varchar(10),
+		 h2 varchar(10),
 		primary key (id_turma),
 		foreign key (id_p) references componentes,
 		foreign key (id_prof) references professor);
-create table horarios
-	(id_hrs serial,
-	 id_t int,
-	 seg varchar (7),
-	 ter varchar (7),
-     qua varchar (7),
-	 qui varchar (7),
-	 sex varchar (7),
-	 primary key (id_hrs),
-	 foreign key (id_t) references turma);
+
