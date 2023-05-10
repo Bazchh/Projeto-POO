@@ -47,7 +47,7 @@ public class Menu {
                 try {
                     // Realizando conexão com o banco de dados atraves da url, port, username e
                     // password
-                    connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael",
+                    connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo",
                             "123456789");
                     // Passando para o atributo instrucão onde ela deve realizar as instruções
                     // passadas
@@ -108,8 +108,7 @@ public class Menu {
             try {
                 // Atributo do tipo connection usado para realizar a conexão com nosso banco de
                 // dados
-                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael",
-                        "123456789");
+                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
                 // String usada para realizar a inserção de dados no banco de dados
                 String tituloDoProfessor;
                 System.out.println(
@@ -160,7 +159,7 @@ public class Menu {
 
             try {
                 // Preparando conxexão com o banco de dados
-                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
                 String sql = "SELECT id_prof, id_p, nome,carga_horaria, titulo FROM professor WHERE id_p = ?";
                 PreparedStatement instrucao = connection.prepareStatement(sql);
                 instrucao.setInt(1, idProfessor);
@@ -209,7 +208,7 @@ public class Menu {
 
             try {
                 // Preparando conxexão com o banco de dados
-                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo", "123456789");
                 String sql = "SELECT id_prof, id_p, nome, titulo, carga_horaria FROM professor WHERE id_p = ?";
                 PreparedStatement instrucao = connection.prepareStatement(sql);
                 instrucao.setInt(1, idProfessor);
@@ -259,7 +258,7 @@ public class Menu {
         ArrayList<Professor> professores = new ArrayList<>();
         Professor professor = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael",
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo",
                     "123456789");
             String sql = "SELECT * FROM professor";
             PreparedStatement instrucao = connection.prepareStatement(sql);
@@ -312,7 +311,7 @@ public class Menu {
             int idDoProfessor;
             String sql;
             // realizando conexão com o banco de dados
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael",
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo",
                     "123456789");
             PreparedStatement instrucao;
             ResultSet consulta;
@@ -423,7 +422,7 @@ public class Menu {
                 // Caso o usuario realmente deseje inserir no BD entramos neste
                 // laço if
                 if (r.equals("S") || r.equals("s") || r.equals("sim")) {
-                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael","mikael", "123456789");
+                    Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo","projetopoo", "123456789");
                     String sql = "INSERT INTO componentes (id_prof,nomecomp,id_p,carga_horaria) VALUES (?,?,?,?)";
                     PreparedStatement instrucao = connection.prepareStatement(sql);
                     professor = getDadosDoProfessor(id_prof);
@@ -511,7 +510,7 @@ public class Menu {
             // dados e não perde-los caso o usuario não deseje alterar algum dos dados
             componente = getComponenteCurricular(idDoComponente);
             clearBuffer(entrada);
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo", "123456789");
             PreparedStatement instrucao;
             String sql;
             String idProfessor;
@@ -665,7 +664,7 @@ public class Menu {
         int idComp = entrada.nextInt();
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael", "123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo", "123456789");
             String sql = "SELECT id_comp, id_prof, nomecomp, id_p, carga_horaria FROM componentes WHERE id_p = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             instrucao.setInt(1, idComp);
@@ -694,7 +693,7 @@ public class Menu {
     static ComponenteCurricular getComponenteCurricular(int idComp) {
         ComponenteCurricular componente = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael",
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo",
                     "123456789");
             String sql = "SELECT id_comp, id_prof, nomecomp, id_p, carga_horaria FROM componentes WHERE id_p = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
@@ -723,7 +722,7 @@ public class Menu {
         ArrayList<ComponenteCurricular> componentes = new ArrayList<>();
         ComponenteCurricular componente = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql = "SELECT * FROM componentes";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             ResultSet consulta = instrucao.executeQuery();
@@ -767,7 +766,7 @@ public class Menu {
             // Neste objeto que obtivemos, temos também o id do professor a qual ela está
             // vinculada
             if (componente.getIdProf() != 0) {
-                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
                 PreparedStatement instrucao;
                 String sql;
                 sql = "SELECT id_t FROM turma WHERE id_comp = ?";
@@ -824,7 +823,7 @@ public class Menu {
             } else {
                 // Caso a disciplina esteja sem nenhum professor vinculado a esse componente,
                 // podemos exclui-lo do banco de dados de forma direta depois de modificar as turmas
-                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+                Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
                 String sql = "SELECT id_t FROM turma WHERE id_comp = ?";
                 PreparedStatement instrucao = connection.prepareStatement(sql);
                 instrucao.setInt(1, componente.getIdKey());
@@ -880,7 +879,7 @@ public class Menu {
             int linhasAfetadas = 0;
             Professor professor = getDadosDoProfessor(id_p);
 
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql;
             //Atualizando carga horaria do professor para depois realizar a subtração de parte da carga horaria, depende da quantidade de professores presentes na disciplina
             sql = "UPDATE professor SET carga_horaria = ? WHERE id_p = ?";
@@ -984,7 +983,7 @@ public class Menu {
             //Primeiro pedimos o id a qual se quer ver os dados da turma
             System.out.println("Insira o id da turma a qual quer ver: ");
             int id_turma = entrada.nextInt();
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql = "SELECT id_comp,id_prof,nome_turma, id_t, semestre, h1, h2 FROM turma WHERE id_t = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             instrucao.setInt(1, id_turma);
@@ -1038,7 +1037,7 @@ public class Menu {
         ArrayList<Turma> turmas = new ArrayList<>();
         Turma turma = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql = "SELECT * FROM turma";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             ResultSet consulta = instrucao.executeQuery();
@@ -1072,7 +1071,7 @@ public class Menu {
         Scanner entrada = new Scanner(System.in);
         Turma turma = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql = "SELECT * FROM turma WHERE semestre = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             System.out.println("\nInsira o semestre para listar as turmas (1 ou 2): ");
@@ -1111,7 +1110,7 @@ public class Menu {
         Scanner entrada = new Scanner(System.in);
         Turma turma = null;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql = "SELECT * FROM turma WHERE id_prof = ?";
             listarProfessores();
             PreparedStatement instrucao = connection.prepareStatement(sql);
@@ -1149,7 +1148,7 @@ public class Menu {
     static void excluirTurma() {
         try {
             Scanner entrada = new Scanner(System.in);
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mikael", "mikael","123456789");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/projetopoo", "projetopoo","123456789");
             String sql = "DELETE FROM turma WHERE id_t = ?";
             PreparedStatement instrucao = connection.prepareStatement(sql);
             System.out.println("\nLista das turmas: ");
